@@ -1,0 +1,661 @@
+/* ================================================================
+   style.css — Universal Stylesheet
+   Local Food Menu & Delivery System — UniMak, Yoni Campus
+   All pages share this one CSS file
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@400;600;700&display=swap');
+
+/* ── Design Tokens ─────────────────────────────────────────── */
+:root {
+  --green:       #2A7A2E;   /* primary brand green (buttons, active nav) */
+  --green-dark:  #1B5220;   /* hover / pressed green */
+  --green-bg:    #EAF4EA;   /* light green tint */
+  --orange:      #D95F02;   /* "Order Food" CTA */
+  --orange-hover:#B84D00;
+
+  --white:       #FFFFFF;
+  --page-bg:     #F4F4F4;   /* outer page background */
+  --surface:     #FFFFFF;   /* card / input surface */
+  --border:      #E0E0E0;
+  --border-focus:#2A7A2E;
+
+  --text:        #1C1C1C;
+  --text-sub:    #555555;
+  --text-muted:  #9E9E9E;
+
+  --shadow-sm:   0 1px 4px rgba(0,0,0,0.07);
+  --shadow-md:   0 3px 16px rgba(0,0,0,0.10);
+
+  --r-input:     8px;
+  --r-btn:       10px;
+  --r-card:      12px;
+  --r-pill:      99px;
+
+  --font-h:      'Poppins',  sans-serif;
+  --font-b:      'Nunito',   sans-serif;
+
+  --nav-h:       62px;   /* bottom nav height */
+  --app-w:       420px;  /* simulated phone width */
+}
+
+/* ── Reset ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+a    { text-decoration: none; color: inherit; }
+ul   { list-style: none; }
+img  { display: block; max-width: 100%; }
+button { cursor: pointer; font-family: var(--font-h); border: none; outline: none; }
+input, select, textarea { font-family: var(--font-b); outline: none; }
+
+/* ── App shell: centred phone-width column ───────────────────── */
+body {
+  font-family: var(--font-b);
+  background: #D0D0D0;       /* grey surround on desktop */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+/* Every page wraps its content in .app */
+.app {
+  width: 100%;
+  max-width: var(--app-w);
+  min-height: 100vh;
+  background: var(--page-bg);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 40px rgba(0,0,0,0.18);
+}
+
+/* Pages that use bottom-nav need room at the bottom */
+.app.has-nav { padding-bottom: var(--nav-h); }
+
+/* ── Top bar with back arrow + title ─────────────────────────── */
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.top-bar .back {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  color: var(--text);
+  cursor: pointer;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+}
+.top-bar h2 {
+  font-family: var(--font-h);
+  font-size: 16px;
+  font-weight: 600;
+  flex: 1;
+  text-align: center;
+}
+/* right-side spacer so title stays centred */
+.top-bar .spacer { width: 32px; flex-shrink: 0; }
+
+/* ── Tab bar (Login | Register) ─────────────────────────────── */
+.tab-bar {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.tab-btn {
+  flex: 1;
+  padding: 13px 0;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: var(--font-h);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color .2s, border-color .2s;
+}
+.tab-btn.active {
+  color: var(--green);
+  border-bottom-color: var(--green);
+}
+
+/* ── Form inputs ─────────────────────────────────────────────── */
+.field {
+  position: relative;
+  margin-bottom: 12px;
+}
+.field .icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.field input {
+  width: 100%;
+  padding: 13px 13px 13px 38px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-input);
+  font-size: 14px;
+  color: var(--text);
+  transition: border-color .2s;
+}
+.field input::placeholder { color: var(--text-muted); }
+.field input:focus { border-color: var(--border-focus); }
+
+/* ── Role radio buttons ─────────────────────────────────────── */
+.role-label {
+  font-family: var(--font-h);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-sub);
+  margin-bottom: 8px;
+}
+.role-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.role-row label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-sub);
+  cursor: pointer;
+}
+.role-row input[type="radio"] { accent-color: var(--green); }
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+/* Green full-width */
+.btn-green {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--green);
+  color: var(--white);
+  font-family: var(--font-h);
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: var(--r-btn);
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+}
+.btn-green:hover  { background: var(--green-dark); }
+.btn-green:active { transform: scale(.98); }
+
+/* Orange full-width (used on landing) */
+.btn-orange {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--orange);
+  color: var(--white);
+  font-family: var(--font-h);
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: var(--r-btn);
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-orange:hover { background: var(--orange-hover); }
+
+/* Small green "Add to Cart" button */
+.btn-add {
+  display: inline-block;
+  padding: 7px 18px;
+  background: var(--green);
+  color: var(--white);
+  font-family: var(--font-h);
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: var(--r-btn);
+  border: none;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-add:hover { background: var(--green-dark); }
+
+/* ── Bottom navigation bar ───────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  /* centred inside the app column */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--app-w);
+  height: var(--nav-h);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-decoration: none;
+  color: var(--text-muted);
+  font-family: var(--font-h);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: color .2s;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+/* SVG icon inside nav */
+.nav-item svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.nav-item.active { color: var(--green); }
+
+/* Cart badge */
+.nav-cart { position: relative; }
+.cart-badge {
+  position: absolute;
+  top: 2px; right: 8px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  min-width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-h);
+}
+
+/* ── Food menu list item ─────────────────────────────────────── */
+.food-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--surface);
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.food-item:last-child { border-bottom: none; }
+.food-thumb {
+  width: 88px;
+  height: 88px;
+  border-radius: var(--r-card);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.food-info { flex: 1; }
+.food-name {
+  font-family: var(--font-h);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.food-price {
+  font-family: var(--font-h);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-sub);
+  margin-bottom: 2px;
+}
+.food-prep {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+/* ── Cart item ───────────────────────────────────────────────── */
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.cart-thumb {
+  width: 60px; height: 60px;
+  border-radius: var(--r-card);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.cart-info { flex: 1; }
+.cart-name {
+  font-family: var(--font-h);
+  font-size: 13px;
+  font-weight: 700;
+}
+.cart-price {
+  font-family: var(--font-h);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+/* Qty +/- controls */
+.qty-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+.qty-btn {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-size: 16px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  color: var(--text);
+  transition: border-color .2s;
+}
+.qty-btn:hover { border-color: var(--green); color: var(--green); }
+.qty-val {
+  font-family: var(--font-h);
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* ── Section divider row ─────────────────────────────────────── */
+.divider { height: 1px; background: var(--border); margin: 0; }
+
+/* ── Info row (used in cart total, checkout detail) ─────────── */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.info-row .label { color: var(--text-sub); font-family: var(--font-h); font-weight: 500; }
+.info-row .value { font-family: var(--font-h); font-weight: 700; color: var(--text); }
+.info-row.total-row .label { font-size: 15px; font-weight: 700; color: var(--text); }
+.info-row.total-row .value { font-size: 15px; color: var(--text); }
+
+/* ── Section heading (inside page body) ─────────────────────── */
+.section-head {
+  padding: 14px 16px 8px;
+  font-family: var(--font-h);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* ── Address / payment block ─────────────────────────────────── */
+.detail-block {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.detail-block .icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.detail-block .text { flex: 1; }
+.detail-block .text strong {
+  display: block;
+  font-family: var(--font-h);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.detail-block .text span { font-size: 12px; color: var(--text-sub); }
+.edit-btn {
+  padding: 6px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-pill);
+  font-family: var(--font-h);
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--surface);
+  color: var(--text-sub);
+  cursor: pointer;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* ── Toast notification ─────────────────────────────────────── */
+#toast {
+  position: fixed;
+  bottom: calc(var(--nav-h) + 12px);
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-h);
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity .25s, transform .25s;
+  z-index: 9999;
+  white-space: nowrap;
+  pointer-events: none;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── Order status badge ─────────────────────────────────────── */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  font-family: var(--font-h);
+  font-size: 11px;
+  font-weight: 700;
+}
+.s-pending   { background: #FFF3E0; color: #E65100; }
+.s-preparing { background: #E3F2FD; color: #1565C0; }
+.s-transit   { background: #F3E5F5; color: #6A1B9A; }
+.s-delivered { background: var(--green-bg); color: var(--green-dark); }
+
+/* ── Order tracking step bar ─────────────────────────────────── */
+.steps {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 16px 8px;
+  background: var(--surface);
+}
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  gap: 6px;
+  position: relative;
+}
+/* Connector line between steps */
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 60%;
+  width: 80%;
+  height: 2px;
+  background: var(--border);
+}
+.step:not(:last-child).done::after { background: var(--green); }
+.step-circle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  position: relative;
+  z-index: 1;
+}
+.step.done   .step-circle { background: var(--green); border-color: var(--green); color: #fff; }
+.step.active .step-circle { background: var(--orange); border-color: var(--orange); color: #fff; }
+.step-lbl {
+  font-family: var(--font-h);
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: center;
+}
+.step.done   .step-lbl { color: var(--green); }
+.step.active .step-lbl { color: var(--orange); }
+
+/* ── Dashboard cards (vendor / rider / customer) ─────────────── */
+.dash-card {
+  background: var(--surface);
+  border-radius: var(--r-card);
+  padding: 16px;
+  margin: 0 14px 12px;
+  box-shadow: var(--shadow-sm);
+}
+.dash-card h3 {
+  font-family: var(--font-h);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.dash-card p { font-size: 12px; color: var(--text-sub); }
+
+/* Order card used in dashboards */
+.order-card {
+  background: var(--surface);
+  border-radius: var(--r-card);
+  padding: 14px;
+  margin: 0 14px 10px;
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--green);
+}
+.order-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.order-card-id {
+  font-family: var(--font-h);
+  font-size: 14px;
+  font-weight: 700;
+}
+.order-card-items { font-size: 12px; color: var(--text-sub); margin-bottom: 10px; }
+.order-card-footer {
+  display: flex;
+  gap: 8px;
+}
+.oc-btn {
+  flex: 1;
+  padding: 9px;
+  border-radius: var(--r-btn);
+  font-family: var(--font-h);
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.oc-btn:hover { opacity: .85; }
+.oc-accept { background: var(--green); color: #fff; }
+.oc-reject { background: #FFEBEE; color: #C62828; }
+.oc-deliver{ background: var(--orange); color: #fff; }
+
+/* ── Stat boxes in dashboards ───────────────────────────────── */
+.stat-row {
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+}
+.stat-box {
+  flex: 1;
+  background: var(--surface);
+  border-radius: var(--r-card);
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.stat-box .sn {
+  font-family: var(--font-h);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--green);
+}
+.stat-box .sl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* ── Hero section (landing page) ────────────────────────────── */
+.hero-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+/* Stacked food images block */
+.hero-stack { display: flex; flex-direction: column; }
+.hero-slice {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Green hero banner (vendor/rider/admin top) ──────────────── */
+.hero-banner {
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  padding: 36px 20px 28px;
+  color: #fff;
+}
+.hero-banner h2 { font-family: var(--font-h); font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+.hero-banner p  { font-size: 13px; opacity: .8; }
+
+/* ── Utility ─────────────────────────────────────────────────── */
+.pad { padding: 16px; }
+.pad-h { padding: 0 16px; }
+.mt8  { margin-top: 8px; }
+.mt14 { margin-top: 14px; }
+.mt20 { margin-top: 20px; }
+.mb8  { margin-bottom: 8px; }
+.mb14 { margin-bottom: 14px; }
+.gap8 { height: 8px; }
+.gap14{ height: 14px; }
+
+/* Error message */
+.err-msg {
+  background: #FFEBEE;
+  color: #C62828;
+  padding: 10px 14px;
+  border-radius: var(--r-input);
+  font-family: var(--font-h);
+  font-size: 13px;
+  margin-bottom: 12px;
+  display: none;
+}
+.err-msg.show { display: block; }
+
+/* ── Responsive: on real mobile remove desktop shadow ─────────── */
+@media (max-width: 480px) {
+  body { background: var(--page-bg); }
+  .app { box-shadow: none; }
+}

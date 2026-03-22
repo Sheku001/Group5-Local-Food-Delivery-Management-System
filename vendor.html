@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Vendor Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* Vendor quick-action grid */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 14px;
+    }
+    .action-btn {
+      padding: 14px 10px;
+      border-radius: var(--r-card);
+      border: none;
+      font-family: var(--font-h);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: opacity .2s;
+    }
+    .action-btn:hover { opacity: .85; }
+    .action-btn span { font-size: 24px; }
+    .ab-accept { background: var(--green-bg);  color: var(--green-dark); }
+    .ab-reject { background: #FFEBEE; color: #C62828; }
+    .ab-menu   { background: #FFF3E0; color: #E65100; }
+    .ab-earn   { background: #E3F2FD; color: #1565C0; }
+  </style>
+</head>
+<body>
+<div class="app has-nav">
+
+  <!-- Green hero banner -->
+  <div class="hero-banner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <h2 id="vendor-name">Vendor Dashboard</h2>
+        <p id="vendor-welcome">Welcome!</p>
+      </div>
+      <div style="font-size:38px;">🏪</div>
+    </div>
+    <!-- Quick action grid inside hero -->
+    <div class="action-grid" style="padding:0;">
+      <button class="action-btn ab-accept" onclick="toast('Accepting orders...')"><span>✅</span>Accept Order</button>
+      <button class="action-btn ab-reject" onclick="toast('Rejecting order...')"><span>❌</span>Reject Order</button>
+      <button class="action-btn ab-menu"   onclick="toast('Menu management coming soon!')"><span>🍽️</span>Manage Menu</button>
+      <button class="action-btn ab-earn"   onclick="toast('Earnings view coming soon!')"><span>💰</span>View Earnings</button>
+    </div>
+  </div>
+
+  <div style="flex:1;overflow-y:auto;">
+
+    <!-- Stats row -->
+    <div class="stat-row" id="vendor-stats"></div>
+
+    <!-- New / pending orders -->
+    <p class="section-head">New Orders</p>
+    <div id="vendor-orders"></div>
+
+    <!-- Logout -->
+    <div style="padding:0 14px 20px;">
+      <button class="btn-green" style="background:#F5F5F5;color:var(--text);border:1.5px solid var(--border);" onclick="App.logout()">🚪 Logout</button>
+    </div>
+
+  </div>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <a class="nav-item active" href="vendor.html">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" onclick="toast('Orders list coming soon!')">
+      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Orders
+    </a>
+    <a class="nav-item" onclick="toast('Menu editor coming soon!')">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      Menu
+    </a>
+    <a class="nav-item" onclick="toast('Earnings page coming soon!')">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Earnings
+    </a>
+  </nav>
+
+</div>
+<div id="toast"></div>
+<script src="app.js"></script>
+<script>
+  requireAuth();
+  if (App.user.role !== 'vendor' && App.user.role !== 'admin') window.location.href = 'menu.html';
+
+  function render() {
+    const u = App.user;
+    document.getElementById('vendor-name').textContent    = u.name;
+    document.getElementById('vendor-welcome').textContent = 'Welcome, ' + u.name.split(' ')[0] + '!';
+
+    const all      = App.orders;
+    const pending  = all.filter(o => o.status === 'pending');
+    const prepping = all.filter(o => o.status === 'preparing');
+    const done     = all.filter(o => o.status === 'delivered');
+
+    document.getElementById('vendor-stats').innerHTML = `
+      <div class="stat-box"><div class="sn">${pending.length}</div><div class="sl">Pending</div></div>
+      <div class="stat-box"><div class="sn">${prepping.length}</div><div class="sl">Preparing</div></div>
+      <div class="stat-box"><div class="sn">${done.length}</div><div class="sl">Delivered</div></div>
+    `;
+
+    const active = all.filter(o => o.status === 'pending' || o.status === 'preparing');
+    const vord   = document.getElementById('vendor-orders');
+
+    if (active.length === 0) {
+      vord.innerHTML = `<p style="padding:16px;font-size:13px;color:var(--text-muted);">No new orders right now.</p>`;
+      return;
+    }
+
+    vord.innerHTML = active.map(o => `
+      <div class="order-card">
+        <div class="order-card-head">
+          <span class="order-card-id">${o.id}</span>
+          <span class="status-badge ${o.status==='pending'?'s-pending':'s-preparing'}">${o.status==='pending'?'New':'Preparing'}</span>
+        </div>
+        <div class="order-card-items">${o.items.map(i=>i.name+'×'+i.qty).join(', ')}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">📍 ${o.location} · SLE ${o.total}</div>
+        <div class="order-card-footer">
+          <button class="oc-btn oc-accept" onclick="acceptOrder('${o.id}')">✅ Accept</button>
+          <button class="oc-btn oc-reject" onclick="rejectOrder('${o.id}')">❌ Reject</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function acceptOrder(id) {
+    const orders = App.orders;
+    const o = orders.find(x => x.id === id);
+    if (o) { o.status = 'preparing'; App.setOrders(orders); toast('Order ' + id + ' accepted!'); render(); }
+  }
+  function rejectOrder(id) {
+    const orders = App.orders;
+    const o = orders.find(x => x.id === id);
+    if (o) { o.status = 'cancelled'; App.setOrders(orders); toast('Order ' + id + ' rejected.'); render(); }
+  }
+
+  render();
+</script>
+</body>
+</html>

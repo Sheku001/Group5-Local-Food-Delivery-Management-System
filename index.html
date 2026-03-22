@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Local Food Menu &amp; Delivery</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body { background: #111; }
+    .landing-wrap {
+      display: flex; flex-direction: column;
+      min-height: 100vh; position: relative;
+    }
+    .food-slice { width: 100%; object-fit: cover; display: block; flex-shrink: 0; }
+    .slice-1 { height: 200px; }
+    .slice-2 { height: 180px; }
+    .slice-3 { height: 180px; }
+    .title-overlay {
+      position: absolute; top: 0; left: 0; right: 0; height: 200px;
+      background: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, rgba(0,0,0,.2) 100%);
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 24px 20px;
+    }
+    .title-overlay h1 {
+      font-family: var(--font-h); font-size: 26px; font-weight: 800;
+      color: #fff; line-height: 1.2; text-shadow: 0 2px 8px rgba(0,0,0,.4);
+    }
+    .title-overlay .tagline {
+      font-family: var(--font-h); font-size: 14px; font-weight: 600;
+      color: #FFD54F; margin-top: 6px; text-shadow: 0 1px 4px rgba(0,0,0,.5);
+    }
+    .landing-btns {
+      background: #fff; padding: 20px 20px 32px;
+      display: flex; flex-direction: column; gap: 10px;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="landing-wrap">
+    <!-- Food image 1 with title overlay -->
+    <div style="position:relative; flex-shrink:0;">
+      <img class="food-slice slice-1"
+           src="https://images.unsplash.com/photo-1512058564366-18510be2db19?w=500&h=220&fit=crop"
+           alt="Jollof Rice"/>
+      <div class="title-overlay">
+        <h1>Local Food Menu<br/>&amp; Delivery</h1>
+        <span class="tagline">🍛 Delicious &amp; Fast</span>
+      </div>
+    </div>
+
+    <!-- Food image 2 -->
+    <img class="food-slice slice-2"
+         src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=500&h=190&fit=crop"
+         alt="Fried Fish"/>
+
+    <!-- Food image 3 -->
+    <img class="food-slice slice-3"
+         src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&h=190&fit=crop"
+         alt="Fufu and Soup"/>
+
+    <!-- CTA buttons -->
+    <div class="landing-btns">
+      <button class="btn-orange" onclick="handleOrderNow()">🍽️ Order Food</button>
+      <a href="auth.html" class="btn-green" style="display:block;text-align:center;padding:14px;">
+        🔐 Login / Register
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<script>
+  /* If already logged in, skip landing page and go straight to dashboard */
+  if (App.user) redirectByRole(App.user.role);
+
+  function handleOrderNow() {
+    if (App.user) {
+      redirectByRole(App.user.role);
+    } else {
+      window.location.href = 'auth.html';
+    }
+  }
+</script>
+</body>
+</html>

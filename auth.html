@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Login / Register</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .auth-body {
+      flex: 1;
+      padding: 24px 16px 32px;
+      background: var(--page-bg);
+      overflow-y: auto;        /* allows scrolling so button is never hidden */
+    }
+    /* Ensure the top-bar doesn't cover content */
+    .top-bar { position: relative !important; z-index: 1 !important; }
+  </style>
+</head>
+<body>
+<div class="app has-nav">
+
+  <!-- Top bar -->
+  <div class="top-bar" style="flex-direction:column;padding:0;gap:0;">
+    <div style="display:flex;align-items:center;padding:12px 14px;gap:8px;">
+      <button class="back" onclick="window.location.href='index.html'">&#8249;</button>
+      <div style="flex:1;text-align:center;font-family:var(--font-h);font-size:16px;font-weight:600;">Account</div>
+      <div style="width:32px;"></div>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login"    onclick="showTab('login')">Login</button>
+      <button class="auth-tab"        id="tab-register" onclick="showTab('register')">Register</button>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="auth-body">
+
+    <!-- Error box -->
+    <div class="err-msg" id="err"></div>
+
+    <!-- LOGIN FORM -->
+    <form id="form-login" onsubmit="doLogin(event)">
+      <div class="gap14"></div>
+      <div class="field">
+        <span class="icon">✉</span>
+        <input type="email" id="l-email" placeholder="Email" required/>
+      </div>
+      <div class="field">
+        <span class="icon">🔒</span>
+        <input type="password" id="l-pass" placeholder="Password" required/>
+      </div>
+      <div class="mt14">
+        <button type="submit" class="btn-green">Login</button>
+      </div>
+
+      <!-- Demo accounts -->
+      <div class="demo-box">
+        <h4>🎯 Demo accounts — click Use to fill</h4>
+        <div class="demo-row">
+          <span>🎓 Student: student@unimak.edu.sl / student123</span>
+          <button type="button" class="demo-use" onclick="fill('student@unimak.edu.sl','student123')">Use</button>
+        </div>
+        <div class="demo-row">
+          <span>🍳 Vendor: vendor@unimak.edu.sl / vendor123</span>
+          <button type="button" class="demo-use" onclick="fill('vendor@unimak.edu.sl','vendor123')">Use</button>
+        </div>
+        <div class="demo-row">
+          <span>🛵 Rider: rider@unimak.edu.sl / rider123</span>
+          <button type="button" class="demo-use" onclick="fill('rider@unimak.edu.sl','rider123')">Use</button>
+        </div>
+        <div class="demo-row">
+          <span>⚙️ Admin: admin@unimak.edu.sl / admin123</span>
+          <button type="button" class="demo-use" onclick="fill('admin@unimak.edu.sl','admin123')">Use</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="form-register" style="display:none;" onsubmit="doRegister(event)">
+      <div class="gap14"></div>
+      <div class="field">
+        <span class="icon">👤</span>
+        <input type="text" id="r-name" placeholder="Full Name" required/>
+      </div>
+      <div class="field">
+        <span class="icon">✉</span>
+        <input type="email" id="r-email" placeholder="Email" required/>
+      </div>
+      <div class="field">
+        <span class="icon">📞</span>
+        <input type="tel" id="r-phone" placeholder="Phone Number" required/>
+      </div>
+      <div class="field">
+        <span class="icon">📍</span>
+        <input type="text" id="r-address" placeholder="Delivery Address" required/>
+      </div>
+      <div class="field">
+        <span class="icon">🔒</span>
+        <input type="password" id="r-pass" placeholder="Password" required/>
+      </div>
+      <p class="role-label">Role</p>
+      <div class="role-row">
+        <label><input type="radio" name="role" value="customer" checked/> Customer</label>
+        <label><input type="radio" name="role" value="vendor"/> Vendor</label>
+        <label><input type="radio" name="role" value="rider"/> Delivery Rider</label>
+      </div>
+      <button type="submit" class="btn-green">Register</button>
+    </form>
+
+  </div><!-- /auth-body -->
+
+  <!-- Bottom nav — shown before login, so Home = landing page -->
+  <nav class="bottom-nav">
+    <a class="nav-item" href="index.html" data-page="home">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Home
+    </a>
+    <a class="nav-item" href="menu.html" data-page="menu">
+      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Menu
+    </a>
+    <a class="nav-item nav-cart" href="cart.html" data-page="cart">
+      <div style="position:relative;display:inline-block;">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span class="cart-badge" id="cart-badge" style="display:none;">0</span>
+      </div>
+      Cart
+    </a>
+    <a class="nav-item active" href="auth.html" data-page="login">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Login
+    </a>
+  </nav>
+</div>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<script>
+  /* If already logged in, skip to dashboard */
+  if (App.user) redirectByRole(App.user.role);
+
+  function showTab(t) {
+    document.getElementById('tab-login').classList.toggle('active', t === 'login');
+    document.getElementById('tab-register').classList.toggle('active', t === 'register');
+    document.getElementById('form-login').style.display    = t === 'login'    ? '' : 'none';
+    document.getElementById('form-register').style.display = t === 'register' ? '' : 'none';
+    document.getElementById('err').classList.remove('show');
+  }
+
+  function fill(email, pass) {
+    document.getElementById('l-email').value = email;
+    document.getElementById('l-pass').value  = pass;
+    document.getElementById('err').classList.remove('show');
+  }
+
+  function doLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('l-email').value.trim().toLowerCase();
+    const pass  = document.getElementById('l-pass').value;
+    const user  = getUsers().find(u => u.email.toLowerCase() === email && u.password === pass);
+    if (!user) {
+      const err = document.getElementById('err');
+      err.textContent = 'Invalid email or password.';
+      err.classList.add('show');
+      return;
+    }
+    App.setUser(user);
+    toast('Welcome back, ' + user.name.split(' ')[0] + '! 👋');
+    setTimeout(() => redirectByRole(user.role), 600);
+  }
+
+  function doRegister(e) {
+    e.preventDefault();
+    const email = document.getElementById('r-email').value.trim().toLowerCase();
+    const users = getUsers();
+    if (users.find(u => u.email.toLowerCase() === email)) {
+      const err = document.getElementById('err');
+      err.textContent = 'An account with this email already exists.';
+      err.classList.add('show');
+      return;
+    }
+    const newUser = {
+      id:       'u' + Date.now(),
+      name:     document.getElementById('r-name').value.trim(),
+      email,
+      phone:    document.getElementById('r-phone').value.trim(),
+      address:  document.getElementById('r-address').value.trim(),
+      password: document.getElementById('r-pass').value,
+      role:     document.querySelector('input[name="role"]:checked').value,
+    };
+    users.push(newUser);
+    saveUsers(users);
+    App.setUser(newUser);
+    toast('Account created! Welcome 🎉');
+    setTimeout(() => redirectByRole(newUser.role), 700);
+  }
+</script>
+</body>
+</html>
