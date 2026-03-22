@@ -238,6 +238,19 @@ All data is saved to the browser's **LocalStorage** under these keys:
 **Course:** Web Programming  
 **Built with:** HTML · CSS · JavaScript  
 
+## 🔗 Repository
+
+| | Link |
+|--|------|
+| 📁 **GitHub Repository** | [https://github.com/Sheku001/Local-Food-Delivery-Management-System](https://github.com/Sheku001/Local-Food-Delivery-Management-System) |
+| 🌐 **Live Demo** | [https://sheku001.github.io/Local-Food-Delivery-Management-System](https://sheku001.github.io/Local-Food-Delivery-Management-System) |
+
+> To clone and run locally:
+> ```bash
+> git clone https://github.com/Sheku001/Local-Food-Delivery-Management-System.git
+> ```
+> Then open `index.html` in your browser.
+
 ---
 
 *© 2025 UniMak Local Food Delivery — All rights reserved*
