@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Manage Users — Admin</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── Filter tabs ── */
+    .filter-tabs { display:flex; background:var(--surface); border-bottom:1px solid var(--border); }
+
+    /* ── User card ── */
+    .user-card {
+      display:flex; align-items:center; gap:12px;
+      padding:13px 16px; background:var(--surface);
+      border-bottom:1px solid var(--border);
+      transition:background .15s;
+    }
+    .user-card:hover { background:var(--page-bg); }
+    .user-avatar {
+      width:44px; height:44px; border-radius:50%;
+      object-fit:cover; border:2px solid var(--border);
+      flex-shrink:0; background:var(--page-bg);
+    }
+    .user-info { flex:1; min-width:0; }
+    .user-name {
+      font-family:var(--font-h); font-size:13px; font-weight:700;
+      color:var(--text); margin-bottom:2px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .user-email { font-size:11px; color:var(--text-muted); }
+    .user-phone { font-size:11px; color:var(--text-sub); margin-top:1px; }
+    .role-chip {
+      font-family:var(--font-h); font-size:10px; font-weight:700;
+      padding:3px 9px; border-radius:var(--r-pill); flex-shrink:0;
+    }
+    .rc-customer { background:#EAF4EA; color:var(--green-dark); }
+    .rc-vendor   { background:#FFF3E0; color:#E65100; }
+    .rc-rider    { background:#E3F2FD; color:#1565C0; }
+    .rc-admin    { background:#F3E5F5; color:#6A1B9A; }
+    .user-del-btn {
+      width:32px; height:32px; border-radius:50%;
+      background:#FFEBEE; color:#C62828;
+      border:none; font-size:15px; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; transition:background .15s;
+    }
+    .user-del-btn:hover { background:#FFCDD2; }
+
+    /* ── Add user modal ── */
+    .modal-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,.55); z-index:200;
+      justify-content:center; align-items:flex-end;
+    }
+    .modal-overlay.open { display:flex; }
+    .modal-sheet {
+      background:var(--surface); width:100%; max-width:var(--app-max);
+      border-radius:20px 20px 0 0; padding:20px 16px 40px;
+      max-height:90vh; overflow-y:auto;
+    }
+    .modal-handle { width:36px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 18px; }
+    .modal-title  { font-family:var(--font-h); font-size:16px; font-weight:800; margin-bottom:18px; color:var(--text); }
+    .form-group   { margin-bottom:14px; }
+    .form-group label {
+      display:block; font-family:var(--font-h); font-size:11px; font-weight:700;
+      color:var(--text-muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:.4px;
+    }
+    .form-group input, .form-group select {
+      width:100%; padding:11px 12px;
+      border:1.5px solid var(--border); border-radius:var(--r-input);
+      font-family:var(--font-b); font-size:14px; color:var(--text);
+      background:var(--surface); transition:border-color .2s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color:var(--green); outline:none;
+    }
+
+    /* ── Confirm delete dialog ── */
+    .confirm-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,.55); z-index:400;
+      align-items:center; justify-content:center;
+    }
+    .confirm-overlay.open { display:flex; }
+    .confirm-box {
+      background:var(--surface); border-radius:var(--r-card);
+      padding:24px 20px; width:280px; max-width:90vw;
+      text-align:center; box-shadow:0 8px 32px rgba(0,0,0,.2);
+    }
+    .confirm-icon { font-size:40px; margin-bottom:10px; }
+    .confirm-box h4 { font-family:var(--font-h); font-size:16px; font-weight:800; margin-bottom:6px; color:var(--text); }
+    .confirm-box p  { font-size:13px; color:var(--text-muted); margin-bottom:20px; }
+    .confirm-btns   { display:flex; gap:10px; }
+    .confirm-btns button {
+      flex:1; padding:12px; border-radius:var(--r-btn);
+      border:none; font-family:var(--font-h); font-size:13px;
+      font-weight:700; cursor:pointer; transition:opacity .2s;
+    }
+    .confirm-btns button:hover { opacity:.85; }
+    .btn-cancel { background:var(--page-bg); color:var(--text); }
+    .btn-del    { background:#C62828; color:#fff; }
+
+    /* ── Stats strip ── */
+    .users-stats {
+      display:flex; gap:10px; padding:14px;
+      background:var(--page-bg);
+    }
+    .us-box {
+      flex:1; background:var(--surface); border-radius:var(--r-card);
+      padding:12px 8px; text-align:center; box-shadow:var(--shadow-sm);
+    }
+    .us-num { font-family:var(--font-h); font-size:20px; font-weight:800; }
+    .us-lbl { font-size:10px; color:var(--text-muted); margin-top:2px; }
+    .us-green  { color:var(--green); }
+    .us-orange { color:var(--orange); }
+    .us-blue   { color:#1565C0; }
+    .us-purple { color:#6A1B9A; }
+
+    /* ── FAB add button ── */
+    .fab {
+      position:fixed; bottom:calc(var(--nav-h) + 16px);
+      right:max(16px, calc(50% - var(--app-max)/2 + 16px));
+      width:52px; height:52px; border-radius:50%;
+      background:var(--green); color:#fff; border:none;
+      font-size:26px; cursor:pointer; z-index:99;
+      box-shadow:0 4px 16px rgba(0,0,0,.25);
+      display:flex; align-items:center; justify-content:center;
+      -webkit-tap-highlight-color:transparent;
+    }
+  </style>
+</head>
+<body>
+<div class="app has-nav">
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <button class="back" onclick="history.back()">&#8249;</button>
+    <h2 id="page-title">Manage Users</h2>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- Role filter tabs -->
+  <div class="filter-tabs">
+    <button class="auth-tab" id="tab-all"      onclick="setFilter('all')">All</button>
+    <button class="auth-tab" id="tab-customer" onclick="setFilter('customer')">Customers</button>
+    <button class="auth-tab" id="tab-vendor"   onclick="setFilter('vendor')">Vendors</button>
+    <button class="auth-tab" id="tab-rider"    onclick="setFilter('rider')">Riders</button>
+    <button class="auth-tab" id="tab-admin"    onclick="setFilter('admin')">Admins</button>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="users-stats" id="users-stats"></div>
+
+  <!-- User list -->
+  <div id="user-list" style="flex:1;overflow-y:auto;background:var(--page-bg);padding-bottom:8px;"></div>
+
+  <!-- FAB: add new user -->
+  <button class="fab" onclick="openAddForm()" title="Add user">＋</button>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <a class="nav-item" href="admin.html">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="admin-deliveries.html">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      Deliveries
+    </a>
+    <a class="nav-item active" href="admin-users.html">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Users
+    </a>
+    <a class="nav-item" href="profile.html">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
+    </a>
+  </nav>
+</div>
+
+<!-- ── Add user modal ── -->
+<div class="modal-overlay" id="add-modal" onclick="closeAddForm(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Add New User</div>
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="af-name" placeholder="e.g. Amadu Kamara" title="Full Name" aria-label="Full Name"/>
+    </div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="af-email" placeholder="email@example.com" title="Email" aria-label="Email"/>
+    </div>
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="tel" id="af-phone" placeholder="076 000 000" title="Phone" aria-label="Phone"/>
+    </div>
+    <div class="form-group">
+      <label>Address</label>
+      <input type="text" id="af-address" placeholder="Hostel 1 – Block A" title="Address" aria-label="Address"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="af-pass" placeholder="Set a password" title="Password" aria-label="Password"/>
+    </div>
+    <div class="form-group">
+      <label>Role</label>
+      <select id="af-role" title="Role" aria-label="Role">
+        <option value="customer">Customer</option>
+        <option value="vendor">Vendor</option>
+        <option value="rider">Rider</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+
+    <button class="btn-green" onclick="addUser()" style="margin-top:4px;">➕ Add User</button>
+  </div>
+</div>
+
+<!-- ── Delete confirm dialog ── -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-icon">🗑️</div>
+    <h4>Delete User?</h4>
+    <p id="confirm-msg">This user will be permanently removed.</p>
+    <div class="confirm-btns">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-del"    id="confirm-ok">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+<script src="app.js"></script>
+<script>
+  requireAuth();
+  if (App.user.role !== 'admin') window.location.href = 'menu.html';
+
+  /* ── Read role param from URL ── */
+  const urlRole    = new URLSearchParams(location.search).get('role') || 'all';
+  let   activeFilter = urlRole;
+
+  const ROLE_LABELS = { all:'All Users', customer:'Customers', vendor:'Vendors', rider:'Riders', admin:'Admins' };
+  const CHIP_CLASS  = { customer:'rc-customer', vendor:'rc-vendor', rider:'rc-rider', admin:'rc-admin' };
+  const NUM_COLOR   = { customer:'us-green', vendor:'us-orange', rider:'us-blue', admin:'us-purple' };
+
+  /* ── Stats strip ── */
+  function renderStats() {
+    const all   = getUsers();
+    const roles = ['customer','vendor','rider','admin'];
+    document.getElementById('users-stats').innerHTML = roles.map(r => `
+      <div class="us-box">
+        <div class="us-num ${NUM_COLOR[r]}">${all.filter(u=>u.role===r).length}</div>
+        <div class="us-lbl">${r.charAt(0).toUpperCase()+r.slice(1)}s</div>
+      </div>
+    `).join('');
+  }
+
+  /* ── Filter tabs ── */
+  function setFilter(role) {
+    activeFilter = role;
+    ['all','customer','vendor','rider','admin'].forEach(r => {
+      document.getElementById('tab-'+r).classList.toggle('active', r === role);
+    });
+    document.getElementById('page-title').textContent = ROLE_LABELS[role] || 'Manage Users';
+    renderList();
+  }
+
+  /* ── Render user list ── */
+  function renderList() {
+    const all  = getUsers();
+    const list = activeFilter === 'all' ? all : all.filter(u => u.role === activeFilter);
+    const el   = document.getElementById('user-list');
+
+    if (list.length === 0) {
+      el.innerHTML = `
+        <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+          <div style="font-size:48px;margin-bottom:12px;">👤</div>
+          <p style="font-family:var(--font-h);font-size:14px;font-weight:600;margin-bottom:4px;">No users found</p>
+          <p style="font-size:13px;">Tap ＋ to add a new user.</p>
+        </div>`;
+      return;
+    }
+
+    el.innerHTML = list.map(u => {
+      const av      = localStorage.getItem('fms_avatar_' + u.id);
+      const imgSrc  = av || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=2A7A2E&color=fff&size=88`;
+      const isMe    = u.id === App.user.id;
+      return `
+      <div class="user-card">
+        <img class="user-avatar" src="${imgSrc}" alt="${u.name}" loading="lazy"/>
+        <div class="user-info">
+          <div class="user-name">${u.name}${isMe ? ' <span style="font-size:10px;color:var(--green);">(You)</span>' : ''}</div>
+          <div class="user-email">✉️ ${u.email}</div>
+          <div class="user-phone">📞 ${u.phone || 'No phone'}</div>
+        </div>
+        <span class="role-chip ${CHIP_CLASS[u.role]}">${u.role}</span>
+        ${isMe ? '' : `<button class="user-del-btn" data-id="${u.id}" data-name="${u.name}" onclick="confirmDelete(this.dataset.id, this.dataset.name)" title="Delete user">🗑</button>`}
+      </div>`;
+    }).join('');
+  }
+
+  /* ── Add user modal ── */
+  function openAddForm() {
+    /* Pre-fill role select from current filter */
+    const sel = document.getElementById('af-role');
+    if (activeFilter !== 'all') sel.value = activeFilter;
+    document.getElementById('add-modal').classList.add('open');
+  }
+  function closeAddForm(e) {
+    if (e.target === document.getElementById('add-modal'))
+      document.getElementById('add-modal').classList.remove('open');
+  }
+
+  function addUser() {
+    const name    = document.getElementById('af-name').value.trim();
+    const email   = document.getElementById('af-email').value.trim().toLowerCase();
+    const phone   = document.getElementById('af-phone').value.trim();
+    const address = document.getElementById('af-address').value.trim();
+    const pass    = document.getElementById('af-pass').value;
+    const role    = document.getElementById('af-role').value;
+
+    if (!name)  { toast('Please enter a name ❌');     return; }
+    if (!email) { toast('Please enter an email ❌');    return; }
+    if (!pass)  { toast('Please set a password ❌');    return; }
+
+    const users = getUsers();
+    if (users.find(u => u.email === email)) {
+      toast('This email already exists ❌'); return;
+    }
+
+    const newUser = {
+      id:       'u' + Date.now(),
+      name, email, phone, address, password: pass, role
+    };
+    users.push(newUser);
+    saveUsers(users);
+
+    /* Clear form */
+    ['af-name','af-email','af-phone','af-address','af-pass'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    document.getElementById('add-modal').classList.remove('open');
+    toast('✅ ' + name + ' added as ' + role);
+    renderStats();
+    renderList();
+  }
+
+  /* ── Delete user ── */
+  let pendingDeleteId = null;
+
+  function confirmDelete(id, name) {
+    pendingDeleteId = id;
+    document.getElementById('confirm-msg').textContent =
+      '"' + name + '" will be permanently removed from the system.';
+    document.getElementById('confirm-overlay').classList.add('open');
+  }
+
+  function closeConfirm() {
+    pendingDeleteId = null;
+    document.getElementById('confirm-overlay').classList.remove('open');
+  }
+
+  document.getElementById('confirm-ok').addEventListener('click', () => {
+    if (!pendingDeleteId) return;
+    const users = getUsers().filter(u => u.id !== pendingDeleteId);
+    saveUsers(users);
+    toast('🗑 User deleted.');
+    closeConfirm();
+    renderStats();
+    renderList();
+  });
+
+  /* ── Init ── */
+  setFilter(urlRole);
+  renderStats();
+</script>
+</body>
+</html>
