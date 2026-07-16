@@ -6,7 +6,11 @@
   <title>Local Food Menu &amp; Delivery</title>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    body { background: #111; }
+    body { background: #111 !important; }
+    /* Override desktop max-height so landing buttons never get clipped */
+    .app { max-height: none !important; overflow-y: auto !important; border-radius: 0 !important; }
+    /* Guarantee button always green regardless of CSS load order */
+    .landing-btns .btn-green { background-color: #2A7A2E !important; color: #fff !important; display: block !important; }
     .landing-wrap {
       display: flex; flex-direction: column;
       min-height: 100vh; position: relative;
