@@ -12,16 +12,16 @@
   <!-- Top bar -->
   <div class="top-bar">
     <button class="back" onclick="history.back()">&#8249;</button>
-    <h2>Food Menu</h2>
+    <h2>🍽️ Food Menu</h2>
     <div class="spacer"></div>
   </div>
 
-  <!-- List of food items — rendered by JS -->
+  <!-- Menu list -->
   <div id="menu-list" style="background:var(--surface);flex:1;overflow-y:auto;"></div>
 
   <!-- Bottom nav -->
   <nav class="bottom-nav">
-    <a class="nav-item" href="index.html" data-page="home">
+    <a class="nav-item" href="customer.html" data-page="home">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Home
     </a>
@@ -36,38 +36,44 @@
       </div>
       Cart
     </a>
-    <a class="nav-item" href="auth.html" data-page="login">
+    <a class="nav-item" href="orders.html" data-page="orders">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+      Orders
+    </a>
+    <a class="nav-item" href="profile.html" data-page="profile">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      Login /&nbsp;<br/>Register
+      Profile
     </a>
   </nav>
-
 </div>
+
 <div id="toast"></div>
 <script src="app.js"></script>
 <script>
-  /* Render all menu items matching the mockup list layout */
   function renderMenu() {
-    document.getElementById('menu-list').innerHTML = MENU.map(item => `
+    const meals = getAllMeals();
+    if (meals.length === 0) {
+      document.getElementById('menu-list').innerHTML = `
+        <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+          <div style="font-size:52px;margin-bottom:12px;">🍽️</div>
+          <p style="font-family:var(--font-h);font-size:14px;font-weight:600;">No meals available yet</p>
+        </div>`;
+      return;
+    }
+    document.getElementById('menu-list').innerHTML = meals.map((item, index) => `
       <div class="food-item">
-        <!-- Food thumbnail -->
-        <img class="food-thumb"
-             src="${item.img}"
-             alt="${item.name}"
-             loading="lazy"/>
-
-        <!-- Text info -->
+        <img class="food-thumb" src="${item.img || 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=200&h=200&fit=crop'}"
+             alt="${item.name}" loading="lazy"
+             onerror="this.src='https://images.unsplash.com/photo-1512058564366-18510be2db19?w=200&h=200&fit=crop'"/>
         <div class="food-info">
           <div class="food-name">${item.name}</div>
           <div class="food-price">SLE ${item.price}</div>
-          <div class="food-prep">Prep Time: ${item.prep} mins</div>
-          <!-- Add to Cart button -->
-          <button class="btn-add" onclick="addToCart(${item.id})">Add to Cart</button>
+          <div class="food-prep">⏱ Prep: ${item.prep} mins · ${item.vendor || item.vendorName || 'Campus Kitchen'}</div>
+          <button class="btn-add" onclick="addToCartById('${item.id}', ${index})">+ Add to Cart</button>
         </div>
       </div>
     `).join('');
   }
-
   renderMenu();
   setActiveNav('menu');
 </script>
