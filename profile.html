@@ -1,256 +1,403 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>My Profile</title>
-  <link rel="stylesheet" href="style.css"/>
-  <style>
-    /* ── Profile page ── */
-    .profile-top {
-      background: var(--surface);
-      padding: 28px 20px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
-    }
-    .avatar-wrap {
-      position: relative;
-      margin-bottom: 12px;
-    }
-    .avatar-img {
-      width: 84px; height: 84px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--green);
-      background: var(--page-bg);
-    }
-    .avatar-edit-btn {
-      position: absolute; bottom: 0; right: 0;
-      width: 26px; height: 26px;
-      background: var(--green); color: #fff;
-      border-radius: 50%; border: 2px solid #fff;
-      font-size: 12px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .avatar-input { display: none; }
-    .profile-top h2 { font-family: var(--font-h); font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
-    .profile-top p  { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
-    .role-chip {
-      display: inline-block; padding: 3px 14px;
-      background: var(--green-bg); color: var(--green-dark);
-      border-radius: var(--r-pill);
-      font-family: var(--font-h); font-size: 11px; font-weight: 700;
-      text-transform: uppercase; letter-spacing: .5px;
-    }
-    /* ── Edit fields ── */
-    .edit-field {
-      display: flex; align-items: center; gap: 12px;
-      padding: 13px 16px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-    }
-    .edit-field:last-child { border-bottom: none; }
-    .ef-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
-    .ef-body { flex: 1; }
-    .ef-body label { display: block; font-size: 11px; color: var(--text-muted); font-family: var(--font-h); margin-bottom: 3px; }
-    .ef-body input {
-      width: 100%; border: none; outline: none;
-      font-family: var(--font-h); font-size: 14px; font-weight: 600;
-      color: var(--text); background: transparent;
-      padding: 0;
-    }
-    .ef-body input:focus { color: var(--green); border-bottom: 1.5px solid var(--green); }
-    .ef-body input[readonly] { color: var(--text-muted); cursor: default; }
-    .save-btn {
-      display: block; width: 100%; padding: 14px;
-      background: var(--green); color: #fff;
-      font-family: var(--font-h); font-size: 15px; font-weight: 700;
-      border-radius: var(--r-btn); border: none; cursor: pointer;
-      transition: background .2s;
-    }
-    .save-btn:hover { background: var(--green-dark); }
-    .logout-btn {
-      display: block; width: 100%; padding: 14px;
-      background: #FFEBEE; color: #C62828;
-      font-family: var(--font-h); font-size: 15px; font-weight: 700;
-      border-radius: var(--r-btn); border: none; cursor: pointer;
-      transition: background .2s; margin-top: 10px;
-    }
-    .logout-btn:hover { background: #FFCDD2; }
-  </style>
-</head>
-<body>
-<div class="app has-nav">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>My Profile</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* ── Profile page ── */
+      .profile-top {
+        background: var(--surface);
+        padding: 28px 20px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border-bottom: 1px solid var(--border);
+      }
+      .avatar-wrap {
+        position: relative;
+        margin-bottom: 12px;
+      }
+      .avatar-img {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--green);
+        background: var(--page-bg);
+      }
+      .avatar-edit-btn {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 26px;
+        height: 26px;
+        background: var(--green);
+        color: #fff;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .avatar-input {
+        display: none;
+      }
+      .profile-top h2 {
+        font-family: var(--font-h);
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--text);
+        margin-bottom: 2px;
+      }
+      .profile-top p {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+      }
+      .role-chip {
+        display: inline-block;
+        padding: 3px 14px;
+        background: var(--green-bg);
+        color: var(--green-dark);
+        border-radius: var(--r-pill);
+        font-family: var(--font-h);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      /* ── Edit fields ── */
+      .edit-field {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 13px 16px;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+      .edit-field:last-child {
+        border-bottom: none;
+      }
+      .ef-icon {
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+      .ef-body {
+        flex: 1;
+      }
+      .ef-body label {
+        display: block;
+        font-size: 11px;
+        color: var(--text-muted);
+        font-family: var(--font-h);
+        margin-bottom: 3px;
+      }
+      .ef-body input {
+        width: 100%;
+        border: none;
+        outline: none;
+        font-family: var(--font-h);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text);
+        background: transparent;
+        padding: 0;
+      }
+      .ef-body input:focus {
+        color: var(--green);
+        border-bottom: 1.5px solid var(--green);
+      }
+      .ef-body input[readonly] {
+        color: var(--text-muted);
+        cursor: default;
+      }
+      .save-btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background: var(--green);
+        color: #fff;
+        font-family: var(--font-h);
+        font-size: 15px;
+        font-weight: 700;
+        border-radius: var(--r-btn);
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .save-btn:hover {
+        background: var(--green-dark);
+      }
+      .logout-btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background: #ffebee;
+        color: #c62828;
+        font-family: var(--font-h);
+        font-size: 15px;
+        font-weight: 700;
+        border-radius: var(--r-btn);
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 10px;
+      }
+      .logout-btn:hover {
+        background: #ffcdd2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app has-nav">
+      <!-- Top bar with SL flag -->
+      <div class="top-bar">
+        <div class="spacer"></div>
+        <h2>My Profile</h2>
 
-  <!-- Top bar with SL flag -->
-  <div class="top-bar">
-    <div class="spacer"></div>
-    <h2>My Profile</h2>
-    <!-- Sierra Leone flag top-right -->
-    <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
-      <svg width="28" height="19" viewBox="0 0 28 19" xmlns="http://www.w3.org/2000/svg" style="border-radius:2px;border:1px solid #eee;">
-        <rect width="28" height="6.33"  y="0"     fill="#1EB53A"/>
-        <rect width="28" height="6.33"  y="6.33"  fill="#FFFFFF"/>
-        <rect width="28" height="6.34"  y="12.66" fill="#0072C6"/>
-      </svg>
+        <div
+          style="display: flex; align-items: center; gap: 5px; flex-shrink: 0"
+        >
+          <svg
+            width="28"
+            height="19"
+            viewBox="0 0 28 19"
+            xmlns="http://www.w3.org/2000/svg"
+            style="border-radius: 2px; border: 1px solid #eee"
+          >
+            <rect width="28" height="6.33" y="0" fill="#1EB53A" />
+            <rect width="28" height="6.33" y="6.33" fill="#FFFFFF" />
+            <rect width="28" height="6.34" y="12.66" fill="#0072C6" />
+          </svg>
+        </div>
+      </div>
+
+      <div style="flex: 1; overflow-y: auto; background: var(--page-bg)">
+        <!-- Avatar + name header (WHITE background) -->
+        <div class="profile-top">
+          <div class="avatar-wrap">
+            <img
+              class="avatar-img"
+              id="avatar-preview"
+              src=""
+              alt="Profile Photo"
+            />
+            <label
+              class="avatar-edit-btn"
+              for="avatar-input"
+              title="Change photo"
+              >✏️</label
+            >
+            <input
+              class="avatar-input"
+              id="avatar-input"
+              type="file"
+              accept="image/*"
+              onchange="handleAvatarChange(event)"
+            />
+          </div>
+          <h2 id="p-name">–</h2>
+          <p id="p-email">–</p>
+          <div class="role-chip" id="p-role">–</div>
+        </div>
+
+        <!-- Activity stats (WHITE cards) -->
+        <div
+          class="stat-row"
+          id="p-stats"
+          style="background: var(--page-bg)"
+        ></div>
+
+        <!-- Editable fields -->
+        <p class="section-head">Edit Profile</p>
+        <div
+          style="
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+          "
+        >
+          <div class="edit-field">
+            <span class="ef-icon">👤</span>
+            <div class="ef-body">
+              <label for="ef-name">Full Name</label>
+              <input
+                type="text"
+                id="ef-name"
+                placeholder="Enter full name"
+                title="Full Name"
+                aria-label="Full Name"
+              />
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <span class="ef-icon">✉️</span>
+            <div class="ef-body">
+              <label for="ef-email">Email (cannot change)</label>
+              <input
+                type="email"
+                id="ef-email"
+                placeholder="Your email address"
+                title="Email address"
+                aria-label="Email address"
+                readonly
+              />
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <span class="ef-icon">📞</span>
+            <div class="ef-body">
+              <label for="ef-phone">Phone Number</label>
+              <input
+                type="tel"
+                id="ef-phone"
+                placeholder="Enter phone number"
+                title="Phone Number"
+                aria-label="Phone Number"
+              />
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <span class="ef-icon">📍</span>
+            <div class="ef-body">
+              <label for="ef-address">Default Address</label>
+              <input
+                type="text"
+                id="ef-address"
+                placeholder="Enter address"
+                title="Default Address"
+                aria-label="Default Address"
+              />
+            </div>
+          </div>
+
+          <div class="edit-field">
+            <span class="ef-icon">🔒</span>
+            <div class="ef-body">
+              <label for="ef-pass"
+                >New Password (leave blank to keep current)</label
+              >
+              <input
+                type="password"
+                id="ef-pass"
+                placeholder="Enter new password"
+                title="New Password"
+                aria-label="New Password"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Save + Logout -->
+        <div style="padding: 16px 14px 4px">
+          <button class="save-btn" onclick="saveProfile()">
+            💾 Save Changes
+          </button>
+          <button class="logout-btn" onclick="App.logout()">🚪 Logout</button>
+        </div>
+        <div style="height: 20px"></div>
+      </div>
+
+      <!-- Bottom nav — dynamically set by role -->
+      <nav class="bottom-nav" id="bottom-nav"></nav>
     </div>
-  </div>
 
-  <div style="flex:1;overflow-y:auto;background:var(--page-bg);">
+    <div id="toast"></div>
+    <script src="app.js"></script>
+    <script>
+      requireAuth();
+      const u = App.user;
 
-    <!-- Avatar + name header (WHITE background) -->
-    <div class="profile-top">
-      <div class="avatar-wrap">
-        <img class="avatar-img" id="avatar-preview" src="" alt="Profile Photo"/>
-        <label class="avatar-edit-btn" for="avatar-input" title="Change photo">✏️</label>
-        <input class="avatar-input" id="avatar-input" type="file" accept="image/*" onchange="handleAvatarChange(event)"/>
-      </div>
-      <h2 id="p-name">–</h2>
-      <p  id="p-email">–</p>
-      <div class="role-chip" id="p-role">–</div>
-    </div>
+      /* ── Load saved avatar or default ── */
+      const savedAvatar = localStorage.getItem("fms_avatar_" + u.id);
+      document.getElementById("avatar-preview").src =
+        savedAvatar ||
+        "https://ui-avatars.com/api/?name=" +
+          encodeURIComponent(u.name) +
+          "&background=2A7A2E&color=fff&size=200";
 
-    <!-- Activity stats (WHITE cards) -->
-    <div class="stat-row" id="p-stats" style="background:var(--page-bg);"></div>
+      /* ── Populate header ── */
+      document.getElementById("p-name").textContent = u.name;
+      document.getElementById("p-email").textContent = u.email;
+      document.getElementById("p-role").textContent =
+        u.role.charAt(0).toUpperCase() + u.role.slice(1);
 
-    <!-- Editable fields -->
-    <p class="section-head">Edit Profile</p>
-    <div style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+      /* ── Populate editable fields ── */
+      document.getElementById("ef-name").value = u.name || "";
+      document.getElementById("ef-email").value = u.email || "";
+      document.getElementById("ef-phone").value = u.phone || "";
+      document.getElementById("ef-address").value = u.address || "";
 
-      <div class="edit-field">
-        <span class="ef-icon">👤</span>
-        <div class="ef-body">
-          <label for="ef-name">Full Name</label>
-          <input type="text" id="ef-name" placeholder="Enter full name" title="Full Name" aria-label="Full Name"/>
-        </div>
-      </div>
-
-      <div class="edit-field">
-        <span class="ef-icon">✉️</span>
-        <div class="ef-body">
-          <label for="ef-email">Email (cannot change)</label>
-          <input type="email" id="ef-email" placeholder="Your email address" title="Email address" aria-label="Email address" readonly/>
-        </div>
-      </div>
-
-      <div class="edit-field">
-        <span class="ef-icon">📞</span>
-        <div class="ef-body">
-          <label for="ef-phone">Phone Number</label>
-          <input type="tel" id="ef-phone" placeholder="Enter phone number" title="Phone Number" aria-label="Phone Number"/>
-        </div>
-      </div>
-
-      <div class="edit-field">
-        <span class="ef-icon">📍</span>
-        <div class="ef-body">
-          <label for="ef-address">Default Address</label>
-          <input type="text" id="ef-address" placeholder="Enter address" title="Default Address" aria-label="Default Address"/>
-        </div>
-      </div>
-
-      <div class="edit-field">
-        <span class="ef-icon">🔒</span>
-        <div class="ef-body">
-          <label for="ef-pass">New Password (leave blank to keep current)</label>
-          <input type="password" id="ef-pass" placeholder="Enter new password" title="New Password" aria-label="New Password"/>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Save + Logout -->
-    <div style="padding:16px 14px 4px;">
-      <button class="save-btn" onclick="saveProfile()">💾 Save Changes</button>
-      <button class="logout-btn" onclick="App.logout()">🚪 Logout</button>
-    </div>
-    <div style="height:20px;"></div>
-
-  </div>
-
-  <!-- Bottom nav — dynamically set by role -->
-  <nav class="bottom-nav" id="bottom-nav"></nav>
-
-</div>
-
-<div id="toast"></div>
-<script src="app.js"></script>
-<script>
-  requireAuth();
-  const u = App.user;
-
-  /* ── Load saved avatar or default ── */
-  const savedAvatar = localStorage.getItem('fms_avatar_' + u.id);
-  document.getElementById('avatar-preview').src = savedAvatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.name) + '&background=2A7A2E&color=fff&size=200';
-
-  /* ── Populate header ── */
-  document.getElementById('p-name').textContent  = u.name;
-  document.getElementById('p-email').textContent = u.email;
-  document.getElementById('p-role').textContent  = u.role.charAt(0).toUpperCase() + u.role.slice(1);
-
-  /* ── Populate editable fields ── */
-  document.getElementById('ef-name').value    = u.name    || '';
-  document.getElementById('ef-email').value   = u.email   || '';
-  document.getElementById('ef-phone').value   = u.phone   || '';
-  document.getElementById('ef-address').value = u.address || '';
-
-  /* ── Stats ── */
-  const myOrders = App.orders.filter(o => o.userId === u.id);
-  const spent    = myOrders.reduce((s, o) => s + o.total, 0);
-  document.getElementById('p-stats').innerHTML = `
+      /* ── Stats ── */
+      const myOrders = App.orders.filter((o) => o.userId === u.id);
+      const spent = myOrders.reduce((s, o) => s + o.total, 0);
+      document.getElementById("p-stats").innerHTML = `
     <div class="stat-box"><div class="sn">${myOrders.length}</div><div class="sl">Orders</div></div>
     <div class="stat-box"><div class="sn">SLE ${spent}</div><div class="sl">Total Spent</div></div>
     <div class="stat-box"><div class="sn">${cartCount()}</div><div class="sl">In Cart</div></div>
   `;
 
-  /* ── Avatar change ── */
-  function handleAvatarChange(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      const dataUrl = ev.target.result;
-      document.getElementById('avatar-preview').src = dataUrl;
-      localStorage.setItem('fms_avatar_' + u.id, dataUrl);
-      toast('Profile photo updated! 📸');
-    };
-    reader.readAsDataURL(file);
-  }
+      /* ── Avatar change ── */
+      function handleAvatarChange(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+          const dataUrl = ev.target.result;
+          document.getElementById("avatar-preview").src = dataUrl;
+          localStorage.setItem("fms_avatar_" + u.id, dataUrl);
+          toast("Profile photo updated! 📸");
+        };
+        reader.readAsDataURL(file);
+      }
 
-  /* ── Save profile ── */
-  function saveProfile() {
-    const users   = getUsers();
-    const idx     = users.findIndex(x => x.id === u.id);
-    if (idx === -1) { toast('Error saving. Please try again.'); return; }
+      /* ── Save profile ── */
+      function saveProfile() {
+        const users = getUsers();
+        const idx = users.findIndex((x) => x.id === u.id);
+        if (idx === -1) {
+          toast("Error saving. Please try again.");
+          return;
+        }
 
-    const newName    = document.getElementById('ef-name').value.trim();
-    const newPhone   = document.getElementById('ef-phone').value.trim();
-    const newAddress = document.getElementById('ef-address').value.trim();
-    const newPass    = document.getElementById('ef-pass').value;
+        const newName = document.getElementById("ef-name").value.trim();
+        const newPhone = document.getElementById("ef-phone").value.trim();
+        const newAddress = document.getElementById("ef-address").value.trim();
+        const newPass = document.getElementById("ef-pass").value;
 
-    if (!newName) { toast('Name cannot be empty ❌'); return; }
+        if (!newName) {
+          toast("Name cannot be empty ❌");
+          return;
+        }
 
-    users[idx].name    = newName;
-    users[idx].phone   = newPhone;
-    users[idx].address = newAddress;
-    if (newPass) users[idx].password = newPass;
+        users[idx].name = newName;
+        users[idx].phone = newPhone;
+        users[idx].address = newAddress;
+        if (newPass) users[idx].password = newPass;
 
-    saveUsers(users);
-    App.setUser(users[idx]);
+        saveUsers(users);
+        App.setUser(users[idx]);
 
-    /* Update header live */
-    document.getElementById('p-name').textContent = newName;
-    document.getElementById('ef-pass').value = '';
+        /* Update header live */
+        document.getElementById("p-name").textContent = newName;
+        document.getElementById("ef-pass").value = "";
 
-    toast('Profile saved successfully! ✅');
-  }
+        toast("Profile saved successfully! ✅");
+      }
 
-  /* ── Render bottom nav based on role ── */
-  const navHTML = {
-    customer: `
+      /* ── Render bottom nav based on role ── */
+      const navHTML = {
+        customer: `
       <a class="nav-item" href="customer.html" data-page="home">
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home
       </a>
@@ -269,7 +416,7 @@
       <a class="nav-item active" href="profile.html" data-page="profile">
         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile
       </a>`,
-    vendor: `
+        vendor: `
       <a class="nav-item" href="vendor.html">
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard
       </a>
@@ -279,14 +426,14 @@
       <a class="nav-item active" href="profile.html">
         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile
       </a>`,
-    rider: `
+        rider: `
       <a class="nav-item" href="rider.html">
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard
       </a>
       <a class="nav-item active" href="profile.html">
         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile
       </a>`,
-    admin: `
+        admin: `
       <a class="nav-item" href="admin.html">
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard
       </a>
@@ -295,10 +442,11 @@
       </a>
       <a class="nav-item active" href="profile.html">
         <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profile
-      </a>`
-  };
-  document.getElementById('bottom-nav').innerHTML = navHTML[u.role] || navHTML.customer;
-  refreshBadge();
-</script>
-</body>
+      </a>`,
+      };
+      document.getElementById("bottom-nav").innerHTML =
+        navHTML[u.role] || navHTML.customer;
+      refreshBadge();
+    </script>
+  </body>
 </html>
