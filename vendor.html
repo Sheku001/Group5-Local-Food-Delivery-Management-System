@@ -49,11 +49,22 @@
     </div>
     <!-- Quick action grid inside hero -->
     <div class="action-grid" style="padding:0;">
-      <button class="action-btn ab-accept" onclick="toast('Accepting orders...')"><span>✅</span>Accept Order</button>
-      <button class="action-btn ab-reject" onclick="toast('Rejecting order...')"><span>❌</span>Reject Order</button>
-      <button class="action-btn ab-menu"   onclick="toast('Menu management coming soon!')"><span>🍽️</span>Manage Menu</button>
-      <button class="action-btn ab-earn"   onclick="toast('Earnings view coming soon!')"><span>💰</span>View Earnings</button>
-    </div>
+  <button class="action-btn ab-accept" onclick="toast('Accepting orders...')">
+    <span>✅</span>Accept Order
+  </button>
+
+  <button class="action-btn ab-reject" onclick="toast('Rejecting order...')">
+    <span>❌</span>Reject Order
+  </button>
+
+  <button class="action-btn ab-menu" onclick="toast('Menu management coming soon!')">
+    <span>🍽️</span>Manage Menu
+  </button>
+
+  <button class="action-btn ab-earn" onclick="window.location.href='vendor-earnings.html'">
+    <span>💰</span>View Earnings
+  </button>
+</div>
   </div>
 
   <div style="flex:1;overflow-y:auto;">
@@ -86,7 +97,7 @@
       <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       Menu
     </a>
-    <a class="nav-item" onclick="toast('Earnings page coming soon!')">
+    <a class="nav-item" href="vendor-earnings.html"">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Earnings
     </a>
