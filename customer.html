@@ -5,35 +5,100 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>My Dashboard</title>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── Featured meal banner ── */
+    .featured-banner {
+      margin: 14px 14px 0;
+      border-radius: var(--r-card);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+    }
+    .featured-banner img {
+      width: 100%; height: 110px; object-fit: cover; display: block;
+    }
+    .featured-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,.65) 0%, rgba(0,0,0,.1) 100%);
+      padding: 14px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .featured-tag {
+      font-family: var(--font-h); font-size: 9px; font-weight: 700;
+      color: #FFD54F; text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .featured-name {
+      font-family: var(--font-h); font-size: 16px; font-weight: 800; color: #fff;
+      margin-bottom: 4px;
+    }
+    .featured-price {
+      font-family: var(--font-h); font-size: 12px; color: rgba(255,255,255,.8);
+    }
+    .featured-btn {
+      position: absolute; right: 14px; bottom: 14px;
+      background: var(--orange); color: #fff;
+      font-family: var(--font-h); font-size: 11px; font-weight: 700;
+      padding: 6px 14px; border-radius: var(--r-pill); border: none; cursor: pointer;
+    }
+  </style>
+      background: linear-gradient(135deg, var(--green-dark), var(--green));
+      padding: 24px 20px 20px; color: #fff;
+    }
+    .dash-hero-top { display:flex; justify-content:space-between; align-items:center; }
+    .dash-hero-top h2 { font-family:var(--font-h); font-size:20px; font-weight:800; }
+    .dash-hero-top p  { font-size:13px; opacity:.8; margin-top:2px; }
+    .hero-avatar {
+      width:48px; height:48px; border-radius:50%;
+      object-fit:cover; border:2px solid rgba(255,255,255,.6);
+      background:rgba(255,255,255,.2); cursor:pointer;
+    }
+  </style>
 </head>
 <body>
 <div class="app has-nav">
 
-  <!-- Green hero banner -->
-  <div class="hero-banner">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
+  <!-- Hero banner -->
+  <div class="dash-hero">
+    <div class="dash-hero-top">
       <div>
         <h2 id="greet">Welcome!</h2>
-        <p id="role-line">Customer Dashboard</p>
+        <p  id="role-line">Customer Dashboard</p>
       </div>
-      <div style="font-size:40px;">👤</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <img class="hero-avatar" id="hero-avatar" src="" alt="avatar"
+             onclick="window.location.href='profile.html'" title="View Profile"/>
+        <div style="display:flex;align-items:center;gap:4px;">
+          <svg width="22" height="15" viewBox="0 0 22 15" xmlns="http://www.w3.org/2000/svg" style="border-radius:2px;">
+            <rect width="22" height="5"   y="0"  fill="#1EB53A"/>
+            <rect width="22" height="5"   y="5"  fill="#FFFFFF"/>
+            <rect width="22" height="5"   y="10" fill="#0072C6"/>
+          </svg>
+          <span style="font-family:var(--font-h);font-size:10px;font-weight:600;opacity:.85;color:#fff;">Sierra Leone</span>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Stats row -->
-  <div class="stat-row" id="stats"></div>
+  <!-- White body -->
+  <div style="flex:1;overflow-y:auto;background:var(--page-bg);">
 
-  <!-- Quick actions -->
-  <p class="section-head">Quick Actions</p>
-  <div style="padding:0 14px;display:flex;flex-direction:column;gap:10px;">
-    <a href="menu.html"     class="btn-green" style="text-align:center;padding:13px;">🍽️ Browse Menu</a>
-    <a href="cart.html"     class="btn-green" style="text-align:center;padding:13px;background:var(--orange);">🛒 View Cart</a>
-    <button class="btn-green" style="background:#F5F5F5;color:var(--text);border:1.5px solid var(--border);" onclick="App.logout()">🚪 Logout</button>
+    <div class="stat-row" id="stats"></div>
+
+    <!-- Featured meal of the day -->
+    <div id="featured-meal"></div>
+
+    <p class="section-head">Quick Actions</p>
+    <div style="padding:0 14px;display:flex;flex-direction:column;gap:10px;">
+      <a href="menu.html" class="btn-green" style="text-align:center;padding:13px;">🍽️ Browse Menu</a>
+      <a href="cart.html" class="btn-green" style="text-align:center;padding:13px;background:var(--orange);">🛒 View Cart</a>
+    </div>
+
+    <p class="section-head" style="margin-top:16px;">Recent Orders</p>
+    <div id="recent-orders"></div>
+
   </div>
-
-  <!-- Recent orders -->
-  <p class="section-head" style="margin-top:16px;">Recent Orders</p>
-  <div id="recent-orders"></div>
 
   <!-- Bottom nav -->
   <nav class="bottom-nav">
@@ -52,49 +117,98 @@
       </div>
       Cart
     </a>
-    <a class="nav-item" href="auth.html" data-page="login">
+    <a class="nav-item" href="orders.html" data-page="orders">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+      Orders
+    </a>
+    <a class="nav-item" href="profile.html" data-page="profile">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Profile
     </a>
   </nav>
-
 </div>
+
 <div id="toast"></div>
 <script src="app.js"></script>
 <script>
   requireAuth();
 
+  /* Load avatar */
+  const av = localStorage.getItem('fms_avatar_' + App.user.id);
+  document.getElementById('hero-avatar').src = av || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(App.user.name) + '&background=1B5220&color=fff&size=100';
+
+  /* ── Time-based greeting ── */
+  function getGreeting() {
+    const h = new Date().getHours();
+    if (h < 12) return 'Good Morning';
+    if (h < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  }
+
   function render() {
     const u = App.user;
-    document.getElementById('greet').textContent     = 'Hi, ' + u.name.split(' ')[0] + '! 👋';
+    document.getElementById('greet').textContent     = getGreeting() + ', ' + u.name.split(' ')[0] + '! 👋';
     document.getElementById('role-line').textContent = 'Customer Dashboard';
 
     const myOrders = App.orders.filter(o => o.userId === u.id);
-    const spent    = myOrders.reduce((s,o) => s + o.total, 0);
+    const spent    = myOrders.reduce((s, o) => s + o.total, 0);
+    const pending  = myOrders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
 
-    /* Stats */
     document.getElementById('stats').innerHTML = `
       <div class="stat-box"><div class="sn">${myOrders.length}</div><div class="sl">Orders</div></div>
-      <div class="stat-box"><div class="sn">${spent}</div><div class="sl">SLE Spent</div></div>
-      <div class="stat-box"><div class="sn">${cartCount()}</div><div class="sl">In Cart</div></div>
+      <div class="stat-box"><div class="sn">SLE ${spent}</div><div class="sl">Spent</div></div>
+      <div class="stat-box"><div class="sn">${pending}</div><div class="sl">Active</div></div>
     `;
 
-    /* Recent orders */
+    /* Featured meal of the day — pick one from MENU by day of week */
+    const featured = MENU[new Date().getDay() % MENU.length];
+    document.getElementById('featured-meal').innerHTML = `
+      <div class="featured-banner" onclick="window.location.href='menu.html'">
+        <img src="${featured.img}" alt="${featured.name}"
+             onerror="this.src='https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=150&fit=crop'"/>
+        <div class="featured-overlay">
+          <div class="featured-tag">⭐ Featured Today</div>
+          <div class="featured-name">${featured.name}</div>
+          <div class="featured-price">SLE ${featured.price} · ⏱ ${featured.prep} mins</div>
+        </div>
+        <button class="featured-btn" onclick="event.stopPropagation();window.location.href='menu.html'">
+          Order Now
+        </button>
+      </div>
+    `;
+
     const ro = document.getElementById('recent-orders');
     if (myOrders.length === 0) {
       ro.innerHTML = `<p style="padding:16px;font-size:13px;color:var(--text-muted);">No orders yet. <a href="menu.html" style="color:var(--green);font-weight:700;">Order now →</a></p>`;
       return;
     }
-    ro.innerHTML = myOrders.slice(0,5).map(o => `
-      <div class="order-card" onclick="window.location.href='track.html?id=${encodeURIComponent(o.id)}'">
+    ro.innerHTML = myOrders.slice(0, 5).map(o => `
+      <div class="order-card" onclick="window.location.href='track.html?id=${encodeURIComponent(o.id)}'" style="cursor:pointer;">
         <div class="order-card-head">
           <span class="order-card-id">${o.id}</span>
           <span class="status-badge ${STATUS[o.status]?.cls || 's-pending'}">${STATUS[o.status]?.label || o.status}</span>
         </div>
-        <div class="order-card-items">${o.items.map(i=>i.name+'×'+i.qty).join(', ')}</div>
-        <div style="font-family:var(--font-h);font-size:13px;font-weight:700;color:var(--green);">SLE ${o.total}</div>
+        <div class="order-card-items">${o.items.map(i => i.name + '×' + i.qty).join(', ')}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+          <span style="font-family:var(--font-h);font-size:13px;font-weight:700;color:var(--green);">SLE ${o.total}</span>
+          ${o.status === 'delivered' ? `<button onclick="event.stopPropagation();reorder('${o.id}')" style="padding:4px 12px;background:var(--green-bg);color:var(--green-dark);border:none;border-radius:var(--r-pill);font-family:var(--font-h);font-size:11px;font-weight:700;cursor:pointer;">🔄 Reorder</button>` : ''}
+        </div>
       </div>
     `).join('');
+  }
+
+  /* ── Reorder — add same items back to cart ── */
+  function reorder(orderId) {
+    const order = App.orders.find(o => o.id === orderId);
+    if (!order) return;
+    const cart = App.cart;
+    order.items.forEach(item => {
+      const ex = cart.find(c => String(c.id) === String(item.id));
+      if (ex) { ex.qty += item.qty; } else { cart.push({ ...item }); }
+    });
+    App.setCart(cart);
+    toast('✅ Items added to cart!');
+    setTimeout(() => window.location.href = 'cart.html', 700);
   }
 
   render();

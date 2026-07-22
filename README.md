@@ -17,14 +17,14 @@
 
 ## 🔐 Demo Accounts
 
-Log in instantly using any of these pre-loaded accounts:
+Log in instantly using any of these pre-loaded accounts from the Login page:
 
-| Role             | Email                        | Password     |
-|------------------|------------------------------|--------------|
-| 🎓 Customer      | student@unimak.edu.sl        | student123   |
-| 🍳 Vendor        | vendor@unimak.edu.sl         | vendor123    |
-| 🛵 Delivery Rider | rider@unimak.edu.sl         | rider123     |
-| ⚙️ Admin          | admin@unimak.edu.sl         | admin123     |
+| Role | Email | Password |
+|------|-------|----------|
+| 🎓 Customer | student@unimak.edu.sl | student123 |
+| 🍳 Vendor | vendor@unimak.edu.sl | vendor123 |
+| 🛵 Delivery Rider | rider@unimak.edu.sl | rider123 |
+| ⚙️ Admin | admin@unimak.edu.sl | admin123 |
 
 > You can also register a new account from the Login / Register page.
 
@@ -32,78 +32,119 @@ Log in instantly using any of these pre-loaded accounts:
 
 ## 🗂️ Project Files
 
-All 18 files live flat in one folder — no subfolders needed.
+All **22 files** live flat in one folder — no subfolders needed.
 
 ### Customer-Facing Pages
 | File | Purpose |
 |------|---------|
 | `index.html` | Landing page with food photos and CTA buttons |
-| `auth.html` | Login and registration with demo account shortcuts |
-| `menu.html` | Browse all 12 available food items and add to cart |
+| `auth.html` | Login and registration with organised demo account cards |
+| `menu.html` | Browse all food items — includes vendor-uploaded meals |
 | `cart.html` | View cart, adjust quantities, proceed to checkout |
 | `checkout.html` | Select delivery location, payment method, place order |
-| `track.html` | Real-time vertical order tracking with status steps |
+| `track.html` | Order tracking with ETA, placed time, rider info, and share button |
 | `orders.html` | Full order history with All / Active / Delivered filters |
-| `customer.html` | Customer dashboard with stats and recent orders |
-| `profile.html` | Editable profile for all roles — photo, name, phone, address |
+| `customer.html` | Customer dashboard with greeting, featured meal, and reorder button |
+| `profile.html` | Editable profile for all roles — photo upload, name, phone, address |
 
 ### Vendor Pages
 | File | Purpose |
 |------|---------|
-| `vendor.html` | Vendor dashboard with quick action buttons and new orders |
+| `vendor.html` | Vendor dashboard with action grid and new order preview |
 | `vendor-orders.html` | All customer orders with filter tabs and detail modal |
-| `vendor-menu.html` | Add, edit, and delete meals with photo upload |
-| `vendor-earnings.html` | Earnings overview with SVG line chart and order history |
+| `vendor-menu.html` | Add, edit, and delete meals with image upload and custom confirm |
+| `vendor-earnings.html` | Earnings with period filter (Today/Week/Month), avg order value, withdrawal button |
 
 ### Rider Pages
 | File | Purpose |
 |------|---------|
-| `rider.html` | Rider dashboard with New Deliveries and Past Deliveries tabs |
+| `rider.html` | Rider dashboard with time-based greeting, today's summary, search filter, and delivery modal |
 
 ### Admin Pages
 | File | Purpose |
 |------|---------|
-| `admin.html` | Admin dashboard with management buttons and earnings chart |
+| `admin.html` | Admin dashboard with action grid, SVG earnings chart, and recent orders |
 | `admin-orders.html` | All platform orders with status filters |
 | `admin-deliveries.html` | All deliveries with real-time status tracking |
+| `admin-users.html` | Full user management — view, add, and delete users by role |
 
 ### Shared Files
 | File | Purpose |
 |------|---------|
-| `app.js` | All shared JavaScript — state, cart, auth, orders, toasts |
-| `style.css` | Complete shared stylesheet with design tokens |
+| `app.js` | All shared JavaScript — state, cart, auth, orders, dark mode, back navigation |
+| `style.css` | Responsive stylesheet with design tokens, animations, and dark mode |
+| `README.md` | Project documentation |
+| `LocalFoodDelivery.pptx` | Project presentation (10 slides) |
 
 ---
 
 ## 👥 User Roles & Features
 
 ### 🎓 Customer
-- Browse menu and add items to cart
-- Place orders with delivery location and payment method
-- Track orders through a vertical step-by-step timeline
-- View full order history with filters
-- Edit profile — name, phone, address, password, photo
+- Time-based greeting (Good Morning / Afternoon / Evening)
+- Featured Meal of the Day banner on dashboard
+- Browse all 12 default meals plus vendor-uploaded meals
+- Add to cart and checkout with location and payment selection
+- Track orders with estimated delivery time and share status
+- One-tap **Reorder** button on past delivered orders
+- View full order history with status filters
+- Edit profile — name, phone, address, password, and profile photo
 
 ### 🍳 Vendor
-- Dashboard with new order alerts
-- Accept or reject individual orders with full detail view
-- Mark accepted orders as ready for pickup
-- Add, edit, and delete meals with photo upload
-- View weekly earnings with a line chart
+- Dashboard with 4-button action grid
+- Accept or reject orders with full detail modal
+- Mark orders as ready for rider pickup
+- Upload and manage custom meals (photo, name, description, price, prep time, category)
+- Meals automatically appear on the customer-facing menu
+- Earnings with **period filter** (All Time / Month / Week / Today)
+- Average order value and request withdrawal button
+- SVG line chart showing weekly earnings overview
 
 ### 🛵 Delivery Rider
-- See new deliveries ready for pickup
-- Tap any delivery card to view full details
-- Mark orders as delivered
-- View past delivery history and earnings
-- Sierra Leone flag displayed on dashboard
+- Time-based greeting and today's summary card in hero
+- **Search deliveries** by order ID or location
+- New Deliveries / Past Deliveries tab panels
+- Tap any order card for full delivery details modal
+- Call Customer and Mark Delivered buttons
+- Rider info card shown on customer tracking page when order is in transit
+- Profile page accessible from dashboard avatar
 
 ### ⚙️ Admin
-- Overview of all orders, revenue, and users
-- Earnings line chart with weekly breakdown
-- View all deliveries with status filters
-- Access to order management and reports
-- Management shortcuts for vendors, users, and riders
+- Dashboard with management action grid (Vendors / Users / Riders / Orders)
+- SVG line chart for weekly earnings overview
+- Summary cards: Today's Earnings, Total Orders, Pending, In Delivery
+- **Full user management** — view all users by role, add new users, delete users
+- All orders with status filter tabs
+- All deliveries with filter tabs and status badges
+- Profile accessible from top-right avatar
+
+---
+
+## ✨ Recent Updates
+
+| Feature | File(s) Changed |
+|---------|----------------|
+| Time-based greeting (Morning / Afternoon / Evening) | `customer.html`, `rider.html` |
+| Featured Meal of the Day banner | `customer.html` |
+| Reorder button on past orders | `customer.html` |
+| Today's summary card in rider hero | `rider.html` |
+| Delivery search filter | `rider.html` |
+| Estimated delivery time (ETA) on tracking | `track.html` |
+| Order placed time and item count on tracking | `track.html` |
+| Rider info card when order is in transit | `track.html` |
+| Share Order Status button | `track.html` |
+| Delivery success celebration card | `track.html` |
+| Period filter (Today / Week / Month / All) on earnings | `vendor-earnings.html` |
+| Average order value stat | `vendor-earnings.html` |
+| Request Withdrawal button | `vendor-earnings.html` |
+| Admin user management (add/delete by role) | `admin-users.html` *(new)* |
+| Vendor meals visible on customer menu | `app.js`, `menu.html` |
+| Dark / Light mode toggle | `app.js`, `style.css` |
+| Auto back arrow on all pages | `app.js` |
+| Fully responsive layout (mobile → desktop) | `style.css` |
+| Pulse animation on pending badges | `style.css` |
+| Fade-in card animations | `style.css` |
+| Dark mode fix for logout buttons | `style.css` |
 
 ---
 
@@ -124,7 +165,7 @@ All 18 files live flat in one folder — no subfolders needed.
 | 11 | Plantain & Beans | SLE 30 | 15 mins | Campus Bites |
 | 12 | Bread & Egg Sauce | SLE 25 | 10 mins | Campus Bites |
 
-> Delivery fee: **SLE 5** on all orders.
+> Delivery fee: **SLE 5** on all orders. Vendors can also add their own meals which appear alongside the default menu.
 
 ---
 
@@ -132,23 +173,25 @@ All 18 files live flat in one folder — no subfolders needed.
 
 ```
 Order Placed  →  Being Prepared  →  Out for Delivery  →  Delivered
-   (Vendor receives)   (Vendor accepts)    (Rider picks up)     (Rider completes)
+  (Customer)      (Vendor accepts)     (Rider picks up)    (Rider completes)
 ```
+
+Each step shows on the customer's tracking page with an estimated time remaining (ETA).
 
 ---
 
 ## 📍 Delivery Locations
 
-Orders can be delivered to any of these campus locations:
-
-- Hostel 1 – Block A
-- Hostel 1 – Block B
-- Hostel 2
-- Lecture Hall 1
-- Lecture Hall 2
-- Library
-- Student Centre
-- Admin Block
+| Location |
+|----------|
+| Hostel 1 – Block A |
+| Hostel 1 – Block B |
+| Hostel 2 |
+| Lecture Hall 1 |
+| Lecture Hall 2 |
+| Library |
+| Student Centre |
+| Admin Block |
 
 ---
 
@@ -164,45 +207,28 @@ Orders can be delivered to any of these campus locations:
 
 | Technology | Usage |
 |------------|-------|
-| HTML5 | Page structure and layout |
-| CSS3 | Styling with CSS custom properties (design tokens) |
-| Vanilla JavaScript | All app logic, state, and interactions |
-| LocalStorage | Persists users, orders, cart, and profile data |
+| HTML5 | Page structure, forms, semantic layout |
+| CSS3 | Design tokens, responsive breakpoints, animations, dark mode |
+| Vanilla JavaScript | Auth, cart, orders, state management, LocalStorage |
+| LocalStorage | Client-side data persistence (no backend needed) |
 | Google Fonts | Poppins (headings) + Nunito (body text) |
-| Unsplash | Placeholder food photography |
-| ui-avatars.com | Auto-generated profile avatars |
 | Inline SVG | Sierra Leone flag, icons, line charts |
+| GitHub Pages | Free hosting and deployment |
 
 ---
 
-## 🏗️ Architecture Notes
+## 🏗️ Architecture
 
-- **Single shared `app.js`** — All pages load one script file that handles state, cart, auth, orders, and toasts
-- **Single shared `style.css`** — All pages share one stylesheet with CSS variables for consistent theming
-- **LocalStorage as database** — All data (users, orders, cart, meals, avatars) is stored in the browser's LocalStorage
-- **No backend required** — The entire app runs client-side in the browser
-- **Mobile-first design** — Simulates a 420px phone width, centred on desktop with a shadow frame
-- **Role-based routing** — After login, users are automatically redirected to their role-specific dashboard
-
----
-
-## 🎨 Design System
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--green` | `#2A7A2E` | Primary brand colour — buttons, active nav |
-| `--green-dark` | `#1B5220` | Hover states |
-| `--orange` | `#D95F02` | CTA buttons, delivery status |
-| `--font-h` | Poppins | All headings and labels |
-| `--font-b` | Nunito | Body text and inputs |
-| `--app-w` | 420px | Simulated phone width |
-| `--nav-h` | 62px | Bottom navigation height |
+- **Single `app.js`** — all pages share one script for auth, cart, orders, dark mode, and back navigation
+- **Single `style.css`** — all pages share one stylesheet with CSS custom properties
+- **LocalStorage as database** — all data persists in the browser with no server
+- **Mobile-first design** — fluid layout from 320px phones to 1440px+ desktops
+- **Role-based routing** — users are redirected to their dashboard after login
+- **Vendor meals on customer menu** — `getAllMeals()` merges hardcoded and vendor-uploaded items
 
 ---
 
 ## 🔄 How Data Persists
-
-All data is saved to the browser's **LocalStorage** under these keys:
 
 | Key | Data |
 |-----|------|
@@ -210,23 +236,26 @@ All data is saved to the browser's **LocalStorage** under these keys:
 | `fms_users` | All registered users |
 | `fms_cart` | Current cart items |
 | `fms_orders` | All placed orders |
+| `fms_dark_mode` | User's dark / light mode preference |
 | `fms_avatar_{userId}` | Profile photo (base64) |
 | `fms_vendor_meals_{userId}` | Vendor's uploaded meals |
 
-> **Note:** Data is stored per browser. Clearing browser data or cache will reset the app to default demo accounts.
+> **Note:** Data is stored per browser. Clearing browser data resets the app to default demo accounts.
 
 ---
 
 ## 🚀 Future Improvements
 
-- [ ] Real backend with a database (e.g. Firebase or Node.js + MongoDB)
+- [ ] Real backend with Firebase or Node.js + MongoDB
 - [ ] Push notifications for order status updates
 - [ ] Live chat between customer and vendor
-- [ ] Google Maps integration for delivery tracking
-- [ ] Online payment gateway integration (Orange Money API)
-- [ ] Admin vendor approval system
-- [ ] Print receipts / order invoices
+- [ ] Google Maps integration for live delivery tracking
+- [ ] Online payment gateway (Orange Money API)
+- [ ] Admin vendor approval and verification system
+- [ ] Print receipts and downloadable order invoices
 - [ ] Multi-language support (Krio, Temne, Mende)
+- [ ] Customer meal ratings and reviews
+- [ ] Rider earnings withdrawal to mobile money
 
 ---
 
@@ -236,6 +265,7 @@ All data is saved to the browser's **LocalStorage** under these keys:
 **Institution:** University of Makeni (UniMak), Yoni Campus  
 **Country:** Sierra Leone 🇸🇱  
 **Course:** Web Programming  
+**GitHub:** [Sheku001](https://github.com/Sheku001)  
 **Built with:** HTML · CSS · JavaScript  
 
 ## 🔗 Repository

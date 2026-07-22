@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Earnings — Vendor</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .earn-hero { background:linear-gradient(135deg,var(--green-dark),var(--green)); padding:24px 20px 28px; color:#fff; }
+    .earn-hero h2 { font-family:var(--font-h); font-size:15px; font-weight:600; opacity:.8; margin-bottom:4px; }
+    .earn-hero .big { font-family:var(--font-h); font-size:32px; font-weight:800; }
+
+    /* Period filter pills */
+    .period-tabs {
+      display:flex; gap:8px; margin-top:14px;
+    }
+    .period-tab {
+      padding:5px 14px; border-radius:var(--r-pill); border:1.5px solid rgba(255,255,255,.4);
+      font-family:var(--font-h); font-size:11px; font-weight:700;
+      color:rgba(255,255,255,.7); background:rgba(255,255,255,.1);
+      cursor:pointer; transition:all .2s;
+    }
+    .period-tab.active { background:#fff; color:var(--green-dark); border-color:#fff; }
+
+    /* Withdrawal button */
+    .withdraw-btn {
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      width:100%; padding:13px;
+      background:var(--green-bg); color:var(--green-dark);
+      border:1.5px solid var(--green); border-radius:var(--r-btn);
+      font-family:var(--font-h); font-size:14px; font-weight:700;
+      cursor:pointer; transition:background .2s; margin-bottom:8px;
+    }
+    .withdraw-btn:hover { background:#d0ead0; }
+
+    /* SVG line chart */
+    .chart-wrap { background:var(--surface); margin:0; padding:16px; border-bottom:1px solid var(--border); }
+    .chart-wrap h3 { font-family:var(--font-h); font-size:14px; font-weight:700; margin-bottom:12px; }
+    .chart-svg { width:100%; height:140px; display:block; }
+    .chart-label { font-family:var(--font-h); font-size:10px; fill:var(--text-muted); }
+    .chart-val   { font-family:var(--font-h); font-size:9px; fill:var(--green); font-weight:700; }
+    /* order rows */
+    .earn-row { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); background:var(--surface); }
+    .earn-row-left h4 { font-family:var(--font-h); font-size:13px; font-weight:700; }
+    .earn-row-left p  { font-size:11px; color:var(--text-muted); margin-top:2px; }
+    .earn-row-amt { font-family:var(--font-h); font-size:13px; font-weight:800; color:var(--green); }
+  </style>
+</head>
+<body>
+<div class="app has-nav">
+  <div class="top-bar">
+    <button class="back" onclick="history.back()">&#8249;</button>
+    <h2>My Earnings</h2>
+    <div class="spacer"></div>
+  </div>
+
+  <div style="flex:1;overflow-y:auto;background:var(--page-bg);">
+
+    <!-- Hero total -->
+    <div class="earn-hero">
+      <h2 id="earn-period-label">Total Earnings</h2>
+      <div class="big" id="total-earn">SLE 0</div>
+      <p style="font-size:12px;opacity:.7;margin-top:4px;" id="earn-sub">0 completed orders</p>
+      <!-- Period filter pills -->
+      <div class="period-tabs">
+        <button class="period-tab active" onclick="setPeriod('all',  this)">All Time</button>
+        <button class="period-tab"        onclick="setPeriod('month',this)">This Month</button>
+        <button class="period-tab"        onclick="setPeriod('week', this)">This Week</button>
+        <button class="period-tab"        onclick="setPeriod('today',this)">Today</button>
+      </div>
+    </div>
+
+    <!-- Summary cards -->
+    <div class="stat-row" id="earn-stats"></div>
+
+    <!-- Withdrawal button -->
+    <div style="padding:0 14px 4px;">
+      <button class="withdraw-btn" onclick="toast('💳 Withdrawal request sent! Processing in 1-2 business days.')">
+        💳 Request Withdrawal
+      </button>
+    </div>
+
+    <!-- Line chart -->
+    <div class="chart-wrap">
+      <h3>📈 Weekly Overview</h3>
+      <svg class="chart-svg" id="earn-chart" viewBox="0 0 320 120" preserveAspectRatio="none"></svg>
+    </div>
+
+    <!-- Completed orders list -->
+    <p class="section-head" style="margin-top:8px;">Completed Orders</p>
+    <div id="earn-orders"></div>
+    <div style="height:16px;"></div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="vendor.html">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Dashboard
+    </a>
+    <a class="nav-item" href="vendor-orders.html">
+      <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>Orders
+    </a>
+    <a class="nav-item" href="vendor-menu.html">
+      <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Menu
+    </a>
+    <a class="nav-item active" href="vendor-earnings.html">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Earnings
+    </a>
+  </nav>
+</div>
+<div id="toast"></div>
+<script src="app.js"></script>
+<script>
+  requireAuth();
+  if (App.user.role !== 'vendor' && App.user.role !== 'admin') window.location.href = 'menu.html';
+
+  let activePeriod = 'all';
+
+  function setPeriod(period, btn) {
+    activePeriod = period;
+    document.querySelectorAll('.period-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const labels = { all:'Total Earnings', month:"This Month's Earnings", week:"This Week's Earnings", today:"Today's Earnings" };
+    document.getElementById('earn-period-label').textContent = labels[period];
+    render();
+  }
+
+  function filterByPeriod(orders) {
+    const now   = new Date();
+    const today = now.toDateString();
+    if (activePeriod === 'today') return orders.filter(o => new Date(o.placedAt).toDateString() === today);
+    if (activePeriod === 'week')  return orders.filter(o => {
+      const d = new Date(o.placedAt);
+      const diff = (now - d) / (1000 * 60 * 60 * 24);
+      return diff <= 7;
+    });
+    if (activePeriod === 'month') return orders.filter(o => {
+      const d = new Date(o.placedAt);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    return orders;
+  }
+
+  function render() {
+    const all       = App.orders;
+    const delivered = all.filter(o => o.status === 'delivered');
+    const filtered  = filterByPeriod(delivered);
+    const total     = filtered.reduce((s,o) => s+o.total, 0);
+    const avg       = filtered.length ? Math.round(total / filtered.length) : 0;
+    const today     = delivered.filter(o => new Date(o.placedAt).toDateString() === new Date().toDateString());
+    const todayAmt  = today.reduce((s,o) => s+o.total, 0);
+
+    document.getElementById('total-earn').textContent = 'SLE ' + total;
+    document.getElementById('earn-sub').textContent   = filtered.length + ' completed order' + (filtered.length===1?'':'s');
+
+    document.getElementById('earn-stats').innerHTML = `
+      <div class="stat-box"><div class="sn" style="font-size:15px;">SLE ${todayAmt}</div><div class="sl">Today</div></div>
+      <div class="stat-box"><div class="sn" style="font-size:15px;">SLE ${avg}</div><div class="sl">Avg Order</div></div>
+      <div class="stat-box"><div class="sn">${filtered.length}</div><div class="sl">Orders</div></div>
+    `;
+
+    /* Line chart — 7 mock + real data points */
+    const days  = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    const vals  = [120, 340, 210, 480, 390, 560, total || 0];
+    const max   = Math.max(...vals, 1);
+    const W=320, H=100, pad=30;
+    const pts = vals.map((v,i) => {
+      const x = pad + (i/(vals.length-1))*(W-2*pad);
+      const y = H - pad - (v/max)*(H-2*pad);
+      return {x,y,v};
+    });
+    const polyline = pts.map(p=>`${p.x},${p.y}`).join(' ');
+    /* Filled area path */
+    const areaPath = `M${pts[0].x},${H-pad} ` + pts.map(p=>`L${p.x},${p.y}`).join(' ') + ` L${pts[pts.length-1].x},${H-pad} Z`;
+
+    document.getElementById('earn-chart').innerHTML = `
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2A7A2E" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="#2A7A2E" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <!-- Area fill -->
+      <path d="${areaPath}" fill="url(#g)"/>
+      <!-- Grid lines -->
+      ${[0,.25,.5,.75,1].map(t=>`<line x1="${pad}" y1="${H-pad-(t*(H-2*pad))}" x2="${W-pad}" y2="${H-pad-(t*(H-2*pad))}" stroke="#E0E0E0" stroke-width="0.5"/>`).join('')}
+      <!-- Line -->
+      <polyline points="${polyline}" fill="none" stroke="#2A7A2E" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <!-- Dots + value labels -->
+      ${pts.map((p,i)=>`
+        <circle cx="${p.x}" cy="${p.y}" r="3" fill="#2A7A2E"/>
+        <text x="${p.x}" y="${p.y-7}" text-anchor="middle" class="chart-val">SLE ${p.v}</text>
+        <text x="${p.x}" y="${H-8}" text-anchor="middle" class="chart-label">${days[i]}</text>
+      `).join('')}
+    `;
+
+    /* Completed orders list */
+    const el = document.getElementById('earn-orders');
+    if (delivered.length === 0) {
+      el.innerHTML = `<p style="padding:16px;font-size:13px;color:var(--text-muted);">No completed orders yet.</p>`;
+      return;
+    }
+    el.innerHTML = delivered.slice(0,20).map(o => {
+      const d = new Date(o.placedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+      return `
+      <div class="earn-row">
+        <div class="earn-row-left">
+          <h4>${o.id}</h4>
+          <p>${o.items.length} item(s) · ${d} · ${o.location}</p>
+        </div>
+        <span class="earn-row-amt">SLE ${o.total}</span>
+      </div>`;
+    }).join('');
+  }
+  render();
+</script>
+</body>
+</html>

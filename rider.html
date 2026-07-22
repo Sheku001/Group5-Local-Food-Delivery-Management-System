@@ -5,126 +5,385 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Rider Dashboard</title>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── Hero ── */
+    .rider-hero {
+      background: linear-gradient(135deg,#0D47A1,#1565C0);
+      padding: 24px 20px 24px; color:#fff;
+    }
+    .hero-top {
+      display:flex; justify-content:space-between; align-items:flex-start;
+    }
+    .hero-top-left h2 { font-family:var(--font-h); font-size:18px; font-weight:800; margin-bottom:2px; }
+    .hero-top-left p  { font-size:13px; opacity:.8; }
+    .hero-top-right   { display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+    .hero-avatar {
+      width:52px; height:52px; border-radius:50%;
+      object-fit:cover; border:2px solid rgba(255,255,255,.7);
+      cursor:pointer; flex-shrink:0;
+    }
+
+    /* Sierra Leone flag inline SVG badge */
+    .sl-flag {
+      display:flex; align-items:center; gap:5px;
+      font-family:var(--font-h); font-size:11px; font-weight:600;
+      opacity:.9;
+    }
+    .flag-svg { width:24px; height:16px; border-radius:2px; flex-shrink:0; }
+
+    /* ── Quick stat strips (no number boxes, just labels) ── */
+    .rider-strips {
+      display:flex; gap:10px; margin-top:18px;
+    }
+    .strip {
+      flex:1; background:rgba(255,255,255,.15);
+      border-radius:10px; padding:10px 12px;
+      display:flex; flex-direction:column; align-items:center; gap:2px;
+    }
+    .strip-num  { font-family:var(--font-h); font-size:20px; font-weight:800; }
+    .strip-lbl  { font-size:10px; opacity:.8; font-family:var(--font-h); font-weight:600; text-transform:uppercase; letter-spacing:.4px; }
+
+    /* ── Today's summary card ── */
+    .today-card {
+      background: rgba(255,255,255,.12);
+      border-radius: 12px; padding: 12px 14px;
+      margin-top: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .today-card .tc-label { font-size:11px; opacity:.75; font-family:var(--font-h); margin-bottom:3px; }
+    .today-card .tc-val   { font-family:var(--font-h); font-size:16px; font-weight:800; }
+
+    /* ── Search box ── */
+    .search-wrap {
+      padding: 10px 14px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .search-input {
+      width: 100%; padding: 9px 14px 9px 36px;
+      border: 1.5px solid var(--border); border-radius: var(--r-pill);
+      font-family: var(--font-b); font-size: 13px; color: var(--text);
+      background: var(--page-bg); transition: border-color .2s;
+    }
+    .search-input:focus { border-color: #1565C0; outline: none; }
+    .search-wrap-inner { position: relative; }
+    .search-icon {
+      position: absolute; left: 11px; top: 50%;
+      transform: translateY(-50%); font-size: 14px; pointer-events: none;
+    }
+    .section-tabs {
+      display:flex; background:var(--surface);
+      border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10;
+    }
+    .section-tab {
+      flex:1; padding:13px 0; background:none; border:none;
+      border-bottom:3px solid transparent;
+      font-family:var(--font-h); font-size:13px; font-weight:600;
+      color:var(--text-muted); cursor:pointer; transition:color .2s, border-color .2s;
+    }
+    .section-tab.active { color:#1565C0; border-bottom-color:#1565C0; }
+
+    /* ── Delivery detail modal ── */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; justify-content:center; align-items:flex-end; }
+    .modal-overlay.open { display:flex; }
+    .modal-sheet { background:var(--surface); width:100%; max-width:var(--app-w); border-radius:20px 20px 0 0; padding:20px 16px 36px; max-height:88vh; overflow-y:auto; }
+    .modal-handle { width:36px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 16px; }
+    .modal-title  { font-family:var(--font-h); font-size:16px; font-weight:800; margin-bottom:14px; }
+    .modal-row    { display:flex; justify-content:space-between; padding:7px 0; font-size:13px; border-bottom:1px solid var(--border); }
+    .modal-row:last-of-type { border-bottom:none; }
+    .modal-row .k { color:var(--text-muted); }
+    .modal-row .v { font-family:var(--font-h); font-weight:600; }
+    .modal-item-row { display:flex; justify-content:space-between; padding:7px 0; font-size:13px; border-bottom:1px solid var(--border); }
+    .modal-item-row:last-child { border-bottom:none; }
+    .modal-actions { display:flex; gap:10px; margin-top:16px; }
+  </style>
 </head>
 <body>
 <div class="app has-nav">
 
-  <!-- Hero banner -->
-  <div class="hero-banner" style="background:linear-gradient(135deg,#0D47A1,#1565C0);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <div>
+  <!-- ── Hero ── -->
+  <div class="rider-hero">
+    <div class="hero-top">
+      <div class="hero-top-left">
         <h2 id="rider-name">Rider Dashboard</h2>
-        <p id="rider-welcome">Welcome!</p>
+        <p  id="rider-welcome">Welcome!</p>
       </div>
-      <div style="font-size:38px;">🛵</div>
+      <div class="hero-top-right">
+        <!-- Sierra Leone flag + label -->
+        <div class="sl-flag">
+          <svg class="flag-svg" viewBox="0 0 24 16" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="5.33" y="0"    fill="#1EB53A"/>
+            <rect width="24" height="5.33" y="5.33" fill="#FFFFFF"/>
+            <rect width="24" height="5.33" y="10.67" fill="#0072C6"/>
+          </svg>
+          <span>Sierra Leone</span>
+        </div>
+        <!-- Avatar → profile -->
+        <img class="hero-avatar" id="hero-avatar" src="" alt="avatar"
+             onclick="window.location.href='profile.html'" title="My Profile"/>
+      </div>
     </div>
+
+    <!-- Summary strips — no number-box tabs -->
+    <div class="rider-strips" id="rider-strips"></div>
+
+    <!-- Today's summary card -->
+    <div class="today-card" id="today-card"></div>
   </div>
 
-  <div style="flex:1;overflow-y:auto;">
+  <!-- ── Body ── -->
+  <div style="flex:1;overflow-y:auto;background:var(--page-bg);">
 
-    <!-- Stats -->
-    <div class="stat-row" id="rider-stats"></div>
+    <!-- Search deliveries -->
+    <div class="search-wrap">
+      <div class="search-wrap-inner">
+        <span class="search-icon">🔍</span>
+        <input class="search-input" id="delivery-search"
+               type="text" placeholder="Search by order ID or location…"
+               oninput="filterDeliveries(this.value)"/>
+      </div>
+    </div>
 
-    <!-- New deliveries -->
-    <p class="section-head">New Deliveries</p>
-    <div id="new-deliveries"></div>
+    <!-- Tab strip: New Deliveries / Past Deliveries -->
+    <div class="section-tabs">
+      <button class="section-tab active" id="tab-new"  onclick="switchTab('new')">🚀 New Deliveries</button>
+      <button class="section-tab"        id="tab-past" onclick="switchTab('past')">✅ Past Deliveries</button>
+    </div>
 
-    <!-- Past deliveries -->
-    <p class="section-head" style="margin-top:8px;">Past Deliveries</p>
-    <div id="past-deliveries"></div>
+    <!-- New deliveries panel -->
+    <div id="panel-new"></div>
 
-    <!-- Logout -->
-    <div style="padding:0 14px 20px;">
+    <!-- Past deliveries panel -->
+    <div id="panel-past" style="display:none;"></div>
+
+    <div style="padding:14px 14px 20px;">
       <button class="btn-green" style="background:#F5F5F5;color:var(--text);border:1.5px solid var(--border);" onclick="App.logout()">🚪 Logout</button>
     </div>
-
   </div>
 
-  <!-- Bottom nav -->
+  <!-- ── Bottom nav ── -->
   <nav class="bottom-nav">
     <a class="nav-item active" href="rider.html">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Dashboard
     </a>
-    <a class="nav-item" onclick="toast('Deliveries list coming soon!')">
+    <a class="nav-item" onclick="switchTab('new'); document.getElementById('tab-new').scrollIntoView();">
       <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
       Deliveries
     </a>
-    <a class="nav-item" onclick="toast('Earnings page coming soon!')">
-      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      Earnings
+    <a class="nav-item" onclick="switchTab('past'); document.getElementById('tab-past').scrollIntoView();">
+      <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      History
     </a>
-    <a class="nav-item" onclick="App.logout()">
-      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Logout
+    <a class="nav-item" href="profile.html">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Profile
     </a>
   </nav>
-
 </div>
+
+<!-- ── Delivery detail modal ── -->
+<div class="modal-overlay" id="del-modal" onclick="closeModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">Delivery Details</div>
+
+    <p style="font-size:11px;color:var(--text-muted);font-family:var(--font-h);margin-bottom:6px;text-transform:uppercase;">Items</p>
+    <div id="modal-items"></div>
+
+    <div style="margin-top:12px;padding-top:4px;border-top:1px solid var(--border);">
+      <div class="modal-row"><span class="k">📍 Deliver to</span><span class="v" id="modal-location">–</span></div>
+      <div class="modal-row"><span class="k">💳 Payment</span><span class="v"  id="modal-payment">–</span></div>
+      <div class="modal-row"><span class="k">💰 Order Total</span><span class="v" id="modal-total" style="color:var(--green);">–</span></div>
+      <div class="modal-row"><span class="k">🏍 Your Earning</span><span class="v" style="color:var(--orange);">SLE 5</span></div>
+    </div>
+
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
 <div id="toast"></div>
 <script src="app.js"></script>
 <script>
   requireAuth();
   if (App.user.role !== 'rider' && App.user.role !== 'admin') window.location.href = 'menu.html';
 
+  /* ── Avatar ── */
+  const av = localStorage.getItem('fms_avatar_' + App.user.id);
+  document.getElementById('hero-avatar').src = av ||
+    'https://ui-avatars.com/api/?name=' + encodeURIComponent(App.user.name) + '&background=0D47A1&color=fff&size=100';
+
+  let activeTab = 'new';
+
+  /* ── Tab switch ── */
+  function switchTab(tab) {
+    activeTab = tab;
+    document.getElementById('tab-new').classList.toggle('active',  tab === 'new');
+    document.getElementById('tab-past').classList.toggle('active', tab === 'past');
+    document.getElementById('panel-new').style.display  = tab === 'new'  ? '' : 'none';
+    document.getElementById('panel-past').style.display = tab === 'past' ? '' : 'none';
+  }
+
+  /* ── Time-based greeting ── */
+  function getGreeting() {
+    const h = new Date().getHours();
+    if (h < 12) return 'Good Morning';
+    if (h < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  }
+
+  /* ── Main render ── */
   function render() {
-    const u = App.user;
+    const u    = App.user;
     document.getElementById('rider-name').textContent    = u.name;
-    document.getElementById('rider-welcome').textContent = 'Hi ' + u.name.split(' ')[0] + ', ready to deliver?';
+    document.getElementById('rider-welcome').textContent = getGreeting() + ', ' + u.name.split(' ')[0] + '! 🏁';
 
     const all  = App.orders;
-    const newD = all.filter(o => o.status === 'preparing');
+    const newD = all.filter(o => o.status === 'transit');
     const done = all.filter(o => o.status === 'delivered');
+    const earned = done.length * 5;
 
-    document.getElementById('rider-stats').innerHTML = `
-      <div class="stat-box"><div class="sn">${newD.length}</div><div class="sl">New</div></div>
-      <div class="stat-box"><div class="sn">${done.length}</div><div class="sl">Completed</div></div>
-      <div class="stat-box"><div class="sn" style="font-size:16px;">${done.length * 5}</div><div class="sl">SLE Earned</div></div>
+    /* Today's deliveries */
+    const todayDone = done.filter(o => new Date(o.placedAt).toDateString() === new Date().toDateString());
+    const todayEarned = todayDone.length * 5;
+
+    /* Today's card */
+    document.getElementById('today-card').innerHTML = `
+      <div><div class="tc-label">Today's Deliveries</div><div class="tc-val">${todayDone.length}</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.2);height:32px;"></div>
+      <div><div class="tc-label">Today's Earnings</div><div class="tc-val">SLE ${todayEarned}</div></div>
+      <div style="width:1px;background:rgba(255,255,255,.2);height:32px;"></div>
+      <div><div class="tc-label">Pending</div><div class="tc-val">${newD.length}</div></div>
     `;
 
-    /* New deliveries */
-    const nd = document.getElementById('new-deliveries');
+    /* Summary strips */
+    document.getElementById('rider-strips').innerHTML = `
+      <div class="strip">
+        <span class="strip-num">${newD.length}</span>
+        <span class="strip-lbl">New</span>
+      </div>
+      <div class="strip">
+        <span class="strip-num">${done.length}</span>
+        <span class="strip-lbl">Completed</span>
+      </div>
+      <div class="strip">
+        <span class="strip-num">SLE ${earned}</span>
+        <span class="strip-lbl">Total Earned</span>
+      </div>
+    `;
+
+    /* ── New deliveries panel ── */
+    const nd = document.getElementById('panel-new');
     if (newD.length === 0) {
-      nd.innerHTML = `<p style="padding:16px;font-size:13px;color:var(--text-muted);">No new deliveries assigned.</p>`;
+      nd.innerHTML = `
+        <div style="text-align:center;padding:50px 20px;color:var(--text-muted);">
+          <div style="font-size:52px;margin-bottom:12px;">🛵</div>
+          <p style="font-family:var(--font-h);font-size:14px;font-weight:600;margin-bottom:4px;">No new deliveries</p>
+          <p style="font-size:13px;">New orders will appear here once vendors accept them.</p>
+        </div>`;
     } else {
       nd.innerHTML = newD.map(o => `
-        <div class="order-card" style="border-left-color:var(--orange);">
+        <div class="order-card" style="border-left-color:var(--orange);cursor:pointer;margin-top:10px;" onclick="openModal('${o.id}')">
           <div class="order-card-head">
             <span class="order-card-id">${o.id}</span>
             <span class="status-badge s-preparing">Ready to Pick Up</span>
           </div>
-          <div class="order-card-items">${o.items.map(i=>i.name+'×'+i.qty).join(', ')}</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">📍 ${o.location} · SLE ${o.total}</div>
-          <div class="order-card-footer">
-            <button class="oc-btn oc-reject" onclick="toast('Call customer feature coming soon!')">📞 Call Customer</button>
-            <button class="oc-btn oc-deliver" onclick="markDelivered('${o.id}')">✅ Complete</button>
+          <div class="order-card-items">${o.items.map(i => i.name + ' ×' + i.qty).join(', ')}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+            <span style="font-size:12px;color:var(--text-muted);">📍 ${o.location}</span>
+            <span style="font-family:var(--font-h);font-size:13px;font-weight:700;color:var(--green);">SLE ${o.total}</span>
           </div>
+          <p style="font-size:11px;color:var(--orange);font-family:var(--font-h);font-weight:600;margin-top:6px;">Tap to view details & complete →</p>
         </div>
       `).join('');
     }
 
-    /* Past deliveries */
-    const pd = document.getElementById('past-deliveries');
+    /* ── Past deliveries panel ── */
+    const pd = document.getElementById('panel-past');
     if (done.length === 0) {
-      pd.innerHTML = `<p style="padding:0 16px 16px;font-size:13px;color:var(--text-muted);">No completed deliveries yet.</p>`;
+      pd.innerHTML = `
+        <div style="text-align:center;padding:50px 20px;color:var(--text-muted);">
+          <div style="font-size:52px;margin-bottom:12px;">📦</div>
+          <p style="font-family:var(--font-h);font-size:14px;font-weight:600;margin-bottom:4px;">No completed deliveries yet</p>
+          <p style="font-size:13px;">Your delivery history will show here.</p>
+        </div>`;
     } else {
-      pd.innerHTML = done.slice(0,5).map(o => `
-        <div class="order-card">
+      pd.innerHTML = done.map(o => {
+        const date = new Date(o.placedAt).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+        return `
+        <div class="order-card" style="cursor:pointer;margin-top:10px;" onclick="openModal('${o.id}')">
           <div class="order-card-head">
             <span class="order-card-id">${o.id}</span>
-            <span class="status-badge s-delivered">Delivered</span>
+            <span class="status-badge s-delivered">Delivered ✅</span>
           </div>
-          <div class="order-card-items">${o.items.map(i=>i.name+'×'+i.qty).join(', ')}</div>
-          <div style="font-size:12px;color:var(--green);font-weight:700;">Earned: SLE 5</div>
-        </div>
-      `).join('');
+          <div class="order-card-items">${o.items.map(i => i.name + ' ×' + i.qty).join(', ')}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+            <span style="font-size:11px;color:var(--text-muted);">📅 ${date} · 📍 ${o.location}</span>
+            <span style="font-family:var(--font-h);font-size:12px;font-weight:700;color:var(--orange);">+SLE 5 earned</span>
+          </div>
+          <p style="font-size:11px;color:var(--text-muted);font-family:var(--font-h);margin-top:4px;">Tap to view details →</p>
+        </div>`;
+      }).join('');
     }
+  }
+
+  /* ── Open delivery detail modal ── */
+  function openModal(id) {
+    const o = App.orders.find(x => x.id === id);
+    if (!o) return;
+
+    document.getElementById('modal-title').textContent = 'Delivery ' + o.id;
+    document.getElementById('modal-items').innerHTML = o.items.map(i => `
+      <div class="modal-item-row">
+        <span style="font-family:var(--font-h);font-weight:600;">${i.name} × ${i.qty}</span>
+        <span style="color:var(--green);font-weight:700;font-family:var(--font-h);">SLE ${i.price * i.qty}</span>
+      </div>`).join('');
+
+    const payLabel = o.payment === 'card' ? 'Credit Card' : o.payment === 'mobile' ? 'Mobile Money' : 'Cash on Delivery';
+    document.getElementById('modal-location').textContent = o.location;
+    document.getElementById('modal-payment').textContent  = payLabel;
+    document.getElementById('modal-total').textContent    = 'SLE ' + o.total;
+
+    /* Action buttons based on status */
+    if (o.status === 'transit') {
+      document.getElementById('modal-actions').innerHTML = `
+        <button class="oc-btn oc-reject" style="flex:1;padding:12px;" onclick="toast('Call customer — coming soon! 📞')">📞 Call Customer</button>
+        <button class="oc-btn oc-deliver" style="flex:1;padding:12px;" data-id="${o.id}" onclick="markDelivered(this.dataset.id)">✅ Mark Delivered</button>
+      `;
+    } else {
+      document.getElementById('modal-actions').innerHTML = `
+        <div style="width:100%;text-align:center;padding:10px;font-family:var(--font-h);font-size:13px;color:var(--green);font-weight:700;">✅ This order was delivered</div>
+      `;
+    }
+
+    document.getElementById('del-modal').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('del-modal'))
+      document.getElementById('del-modal').classList.remove('open');
   }
 
   function markDelivered(id) {
     const orders = App.orders;
     const o = orders.find(x => x.id === id);
-    if (o) { o.status = 'delivered'; App.setOrders(orders); toast('Order ' + id + ' delivered! 🎉'); render(); }
+    if (o) {
+      o.status = 'delivered';
+      App.setOrders(orders);
+      toast('🎉 Order ' + id + ' marked as delivered!');
+    }
+    document.getElementById('del-modal').classList.remove('open');
+    render();
+  }
+
+  /* ── Search / filter deliveries ── */
+  function filterDeliveries(query) {
+    const q = query.trim().toLowerCase();
+    const cards = document.querySelectorAll('#panel-new .order-card, #panel-past .order-card');
+    cards.forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
   }
 
   render();
